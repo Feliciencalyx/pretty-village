@@ -34,34 +34,34 @@
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.98 0.005 120);
-  --foreground: oklch(0.22 0.03 150);
-  --card: oklch(0.96 0.008 120);
-  --card-foreground: oklch(0.22 0.03 150);
-  --popover: oklch(0.98 0.005 120);
-  --popover-foreground: oklch(0.22 0.03 150);
-  --primary: oklch(0.32 0.05 150);
-  --primary-foreground: oklch(0.98 0.005 120);
-  --secondary: oklch(0.85 0.04 140);
-  --secondary-foreground: oklch(0.22 0.03 150);
-  --muted: oklch(0.93 0.01 130);
-  --muted-foreground: oklch(0.45 0.02 140);
-  --accent: oklch(0.72 0.08 140);
-  --accent-foreground: oklch(0.15 0.02 150);
+  --background: oklch(0.98 0.012 85);
+  --foreground: oklch(0.22 0.03 60);
+  --card: oklch(0.96 0.018 85);
+  --card-foreground: oklch(0.22 0.03 60);
+  --popover: oklch(0.98 0.012 85);
+  --popover-foreground: oklch(0.22 0.03 60);
+  --primary: oklch(0.35 0.06 55);
+  --primary-foreground: oklch(0.98 0.012 85);
+  --secondary: oklch(0.88 0.05 80);
+  --secondary-foreground: oklch(0.22 0.03 60);
+  --muted: oklch(0.94 0.02 80);
+  --muted-foreground: oklch(0.48 0.04 70);
+  --accent: oklch(0.75 0.14 75);
+  --accent-foreground: oklch(0.18 0.03 60);
   --destructive: oklch(0.55 0.2 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.85 0.02 130 / 40%);
-  --input: oklch(0.85 0.02 130);
-  --ring: oklch(0.5 0.06 150);
+  --border: oklch(0.82 0.04 75 / 45%);
+  --input: oklch(0.82 0.04 75);
+  --ring: oklch(0.6 0.12 70);
 
-  --forest: oklch(0.28 0.05 150);
-  --moss: oklch(0.42 0.08 145);
-  --fern: oklch(0.62 0.1 140);
-  --mist: oklch(0.85 0.04 140);
+  --forest: oklch(0.25 0.04 55);
+  --moss: oklch(0.55 0.13 70);
+  --fern: oklch(0.78 0.16 80);
+  --mist: oklch(0.96 0.03 85);
 
-  --gradient-hero: linear-gradient(180deg, transparent 0%, oklch(0.15 0.03 150 / 0.4) 60%, oklch(0.12 0.03 150 / 0.85) 100%);
+  --gradient-hero: linear-gradient(180deg, transparent 0%, oklch(0.18 0.04 55 / 0.45) 55%, oklch(0.14 0.04 55 / 0.9) 100%);
   --gradient-moss: linear-gradient(135deg, var(--forest), var(--moss));
-  --shadow-luxe: 0 30px 60px -20px oklch(0.15 0.03 150 / 0.35);
+  --shadow-luxe: 0 30px 60px -20px oklch(0.35 0.1 65 / 0.4);
   --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
 }
 

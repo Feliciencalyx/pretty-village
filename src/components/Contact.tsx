@@ -75,7 +75,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background py-12">
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
-        <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Musanze Village</p>
+        <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
         <div className="flex gap-8 eyebrow text-muted-foreground">
           <a href="#" className="hover:text-foreground">Instagram</a>
           <a href="#" className="hover:text-foreground">Journal</a>
