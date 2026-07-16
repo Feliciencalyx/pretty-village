@@ -22,13 +22,13 @@ function Tree() {
     <group ref={g}>
       <mesh position={[0, -0.5, 0]}>
         <cylinderGeometry args={[0.15, 0.2, 1.6, 8]} />
-        <meshStandardMaterial color="#6b3a2a" roughness={0.9} />
+        <meshStandardMaterial color="#4a2818" roughness={0.9} />
       </mesh>
-      <Leaf position={[0, 0.6, 0]} rotation={[0, 0, 0]} color="#2d5a3d" />
-      <Leaf position={[0.35, 0.45, 0.2]} rotation={[0, 0.5, 0]} color="#3a6b48" />
-      <Leaf position={[-0.35, 0.5, -0.15]} rotation={[0, -0.5, 0]} color="#4a7a58" />
-      <Leaf position={[0.1, 0.85, -0.3]} rotation={[0, 0, 0]} color="#5a8a5c" />
-      <Leaf position={[-0.2, 0.75, 0.3]} rotation={[0, 0, 0]} color="#3a6b48" />
+      <Leaf position={[0, 0.6, 0]} rotation={[0, 0, 0]} color="#c9902d" />
+      <Leaf position={[0.35, 0.45, 0.2]} rotation={[0, 0.5, 0]} color="#e8b84a" />
+      <Leaf position={[-0.35, 0.5, -0.15]} rotation={[0, -0.5, 0]} color="#a0722e" />
+      <Leaf position={[0.1, 0.85, -0.3]} rotation={[0, 0, 0]} color="#f0d78c" />
+      <Leaf position={[-0.2, 0.75, 0.3]} rotation={[0, 0, 0]} color="#d4842a" />
     </group>
   );
 }
