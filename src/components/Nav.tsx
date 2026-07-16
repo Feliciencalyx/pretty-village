@@ -33,7 +33,7 @@ export function Nav() {
             <circle cx="20" cy="14" r="1.5" fill="currentColor" />
           </svg>
           <span className={`text-sm tracking-[0.3em] uppercase ${scrolled ? "text-primary" : "text-mist"}`}>
-            Musanze
+            Pretty Village
           </span>
         </Link>
         <nav className="hidden items-center gap-10 md:flex">
