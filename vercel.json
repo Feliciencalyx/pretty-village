@@ -1,5 +1,7 @@
 {
-  "buildCommand": "NITRO_PRESET=vercel vite build",
+  "buildCommand": "npm run build:vercel",
+  "installCommand": "npm install",
+  "framework": null,
   "headers": [
     {
       "source": "/(.*)",
