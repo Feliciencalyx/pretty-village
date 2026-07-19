@@ -4,6 +4,33 @@ import { useState } from "react";
 export function Contact() {
   const { ref, visible } = useReveal<HTMLDivElement>();
   const [sent, setSent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const sanitizeInput = (str: string) => {
+    return str.replace(/<[^>]*>/g, "").trim();
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+    const name = sanitizeInput(formData.get("name") as string || "");
+    const email = sanitizeInput(formData.get("email") as string || "");
+
+    if (!name || !email) {
+      setErrorMsg("Please provide your name and email.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMsg("Please provide a valid email address.");
+      return;
+    }
+
+    setSent(true);
+  };
 
   return (
     <section id="contact" className="bg-background py-32 md:py-48">
@@ -40,9 +67,12 @@ export function Contact() {
         </div>
 
         <form
-          onSubmit={(e) => { e.preventDefault(); setSent(true); }}
+          onSubmit={handleSubmit}
           className={`space-y-6 transition-all duration-1000 delay-200 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
         >
+          {errorMsg && (
+            <p className="text-xs font-semibold text-red-500 animate-fadeIn">{errorMsg}</p>
+          )}
           {[
             { label: "Name", type: "text", name: "name" },
             { label: "Email", type: "email", name: "email" },

@@ -172,12 +172,26 @@ function BookingPage() {
     }
   };
 
+  const sanitizeInput = (str: string) => {
+    return str.replace(/<[^>]*>/g, "").trim();
+  };
+
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg("");
 
-    if (!guestName || !guestEmail || !guestPhone) {
-      setErrorMsg("Please complete all guest contact fields.");
+    const cleanGuestName = sanitizeInput(guestName);
+    const cleanGuestEmail = sanitizeInput(guestEmail);
+    const cleanGuestPhone = sanitizeInput(guestPhone);
+
+    if (!cleanGuestName || !cleanGuestEmail || !cleanGuestPhone) {
+      setErrorMsg("Please complete all guest contact fields with valid entries.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanGuestEmail)) {
+      setErrorMsg("Please enter a valid email address.");
       return;
     }
 
@@ -229,9 +243,9 @@ function BookingPage() {
           total,
         },
         guest: {
-          name: guestName,
-          email: guestEmail,
-          phone: guestPhone,
+          name: cleanGuestName,
+          email: cleanGuestEmail,
+          phone: cleanGuestPhone,
         },
         payment: {
           method: paymentMethod,
