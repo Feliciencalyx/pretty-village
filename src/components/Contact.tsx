@@ -21,11 +21,20 @@ export function Contact() {
           <div className="mt-12 space-y-6 border-t border-border pt-8">
             <div>
               <p className="eyebrow text-muted-foreground">Find us</p>
-              <p className="mt-2 text-foreground/80">Kinigi Road, Musanze<br />Northern Province, Rwanda</p>
+              <p className="mt-2 text-foreground/80 font-light">Mukizungu Road, Musanze<br />Northern Province, Rwanda</p>
+              <div className="mt-4 flex gap-4 text-xs font-semibold uppercase tracking-wider">
+                <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="text-moss hover:text-primary transition">Instagram</a>
+                <span className="text-border">·</span>
+                <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="text-moss hover:text-primary transition">TikTok</a>
+              </div>
             </div>
             <div>
-              <p className="eyebrow text-muted-foreground">Write</p>
-              <p className="mt-2 text-foreground/80">stay@musanzevillage.rw</p>
+              <p className="eyebrow text-muted-foreground">Contacts</p>
+              <p className="mt-2 text-foreground/80 font-light">
+                Email: <a href="mailto:prettyvillagee@gmail.com" className="hover:underline text-moss hover:text-primary transition">prettyvillagee@gmail.com</a>
+                <br />
+                Phone: <a href="tel:0792500176" className="hover:underline text-moss hover:text-primary transition">0792500176</a>
+              </p>
             </div>
           </div>
         </div>
@@ -77,9 +86,8 @@ export function Footer() {
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
         <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
         <div className="flex gap-8 eyebrow text-muted-foreground">
-          <a href="#" className="hover:text-foreground">Instagram</a>
-          <a href="#" className="hover:text-foreground">Journal</a>
-          <a href="#" className="hover:text-foreground">Privacy</a>
+          <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Instagram</a>
+          <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">TikTok</a>
         </div>
       </div>
     </footer>

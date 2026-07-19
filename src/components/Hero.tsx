@@ -14,13 +14,12 @@ export function Hero() {
         muted
         loop
         playsInline
-        poster="https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=1920&q=80"
         className="absolute inset-0 h-full w-full object-cover"
       >
-        <source src="https://cdn.pixabay.com/video/2022/07/24/125310-733046997_large.mp4" type="video/mp4" />
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
-      <div className="absolute inset-0 bg-forest/25" />
+      <div className="absolute inset-0 bg-forest/40" />
 
       <div className="relative z-10 flex h-full flex-col justify-between px-6 pb-16 pt-32 md:px-16 md:pb-24">
         <div

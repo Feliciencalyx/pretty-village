@@ -27,8 +27,8 @@
   --color-fern: var(--fern);
   --color-forest: var(--forest);
   --color-mist: var(--mist);
-  --font-display: "Cormorant Garamond", serif;
-  --font-body: "Inter", sans-serif;
+  --font-display: "Playfair Display", serif;
+  --font-body: "Outfit", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
@@ -95,3 +95,56 @@
   text-transform: uppercase;
   font-weight: 500;
 }
+
+/* iOS 26.5 Premium UI Styling utilities */
+@utility ios-glass {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+@utility ios-glass-dark {
+  background: rgba(20, 30, 20, 0.75);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility ios-springy {
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.2, 1.1);
+}
+
+@utility ios-springy-btn {
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.2, 1.1);
+  &:active {
+    transform: scale(0.96);
+  }
+}
+
+@utility safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@utility safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+@utility animate-marquee {
+  display: inline-block;
+  animation: marquee 10s linear infinite;
+}
+

@@ -3,7 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { Story } from "@/components/Story";
 import { Stay } from "@/components/Stay";
-import { Experiences } from "@/components/Experiences";
+import { Services } from "@/components/Services";
 import { Village } from "@/components/Village";
 import { Gallery } from "@/components/Gallery";
 import { Contact, Footer } from "@/components/Contact";
@@ -19,7 +19,7 @@ function Index() {
       <Hero />
       <Story />
       <Stay />
-      <Experiences />
+      <Services />
       <Village />
       <Gallery />
       <Contact />
