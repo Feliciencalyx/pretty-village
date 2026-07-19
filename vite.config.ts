@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 
@@ -22,7 +21,9 @@ export default defineConfig({
     headers: SECURITY_HEADERS,
   },
   plugins: [
-    tanstackRouter(),
+    // tanstackStart already includes the router plugin internally.
+    // Adding tanstackRouter() separately causes its code-splitter to
+    // run twice on every route file, producing Duplicate declaration errors.
     tanstackStart({
       server: {
         entry: "server",
