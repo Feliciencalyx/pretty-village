@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, Calendar, Flame, Coffee, Wifi, Check, Sparkles, User, Maximize2, Compass } from "lucide-react";
+import { ArrowLeft, Coffee, Check, User, Maximize2, Compass } from "lucide-react";
 import { useState } from "react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Contact";
