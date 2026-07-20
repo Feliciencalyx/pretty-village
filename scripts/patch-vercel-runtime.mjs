@@ -1,34 +1,47 @@
 /**
  * Post-build patch for Vercel Serverless deployment:
+ * Dynamically scans all .func directories inside .vercel/output/functions/ and:
  * 1. Forces Nitro serverless function runtime to nodejs22.x
  * 2. Bridges Nitro's Web Fetch handler { fetch(req) } to Vercel's Node.js (req, res) handler.
  */
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join } from "path";
 
-const funcDir = join(".vercel", "output", "functions", "__server.func");
-const vcConfigPath = join(funcDir, ".vc-config.json");
-const indexMjsPath = join(funcDir, "index.mjs");
+const functionsDir = join(".vercel", "output", "functions");
 
-// 1. Patch .vc-config.json runtime to nodejs22.x
-try {
-  const config = JSON.parse(readFileSync(vcConfigPath, "utf8"));
-  if (config.runtime !== "nodejs22.x") {
-    config.runtime = "nodejs22.x";
-    writeFileSync(vcConfigPath, JSON.stringify(config, null, 2));
-    console.log("✅ Patched .vc-config.json: runtime set to nodejs22.x");
-  } else {
-    console.log("✅ .vc-config.json already uses nodejs22.x — no patch needed.");
-  }
-} catch (e) {
-  console.warn("⚠️ Could not patch .vc-config.json:", e.message);
-}
+if (!existsSync(functionsDir)) {
+  console.warn("⚠️  .vercel/output/functions directory does not exist.");
+} else {
+  const funcDirs = readdirSync(functionsDir).filter((d) => d.endsWith(".func"));
+  console.log(`🔍 Found ${funcDirs.length} serverless function(s) to patch: ${funcDirs.join(", ")}`);
 
-// 2. Patch index.mjs to convert Web Fetch handler to Node (req, res) handler
-try {
-  let content = readFileSync(indexMjsPath, "utf8");
-  if (!content.includes("nodeHandlerAdapter")) {
-    const bridgeCode = `
+  for (const funcName of funcDirs) {
+    const funcDir = join(functionsDir, funcName);
+    const vcConfigPath = join(funcDir, ".vc-config.json");
+    const indexMjsPath = join(funcDir, "index.mjs");
+
+    // 1. Patch .vc-config.json runtime to nodejs22.x
+    if (existsSync(vcConfigPath)) {
+      try {
+        const config = JSON.parse(readFileSync(vcConfigPath, "utf8"));
+        if (config.runtime !== "nodejs22.x") {
+          config.runtime = "nodejs22.x";
+          writeFileSync(vcConfigPath, JSON.stringify(config, null, 2));
+          console.log(`✅ Patched ${funcName}/.vc-config.json: runtime set to nodejs22.x`);
+        } else {
+          console.log(`✅ ${funcName}/.vc-config.json already uses nodejs22.x`);
+        }
+      } catch (e) {
+        console.warn(`⚠️ Could not patch ${funcName}/.vc-config.json:`, e.message);
+      }
+    }
+
+    // 2. Patch index.mjs to convert Web Fetch handler to Node (req, res) handler
+    if (existsSync(indexMjsPath)) {
+      try {
+        let content = readFileSync(indexMjsPath, "utf8");
+        if (!content.includes("nodeHandlerAdapter")) {
+          const bridgeCode = `
 
 // --- Vercel Node.js Serverless Function Adapter ---
 async function nodeHandlerAdapter(req, res) {
@@ -49,19 +62,11 @@ async function nodeHandlerAdapter(req, res) {
     }
 
     const body = (req.method === "GET" || req.method === "HEAD") ? null : req;
-    const webReq = new Request(url, {
-      method: req.method,
-      headers,
-      body,
-      duplex: "half",
-    });
-
+    const webReq = new Request(url, { method: req.method, headers, body, duplex: "half" });
     const webRes = await vercel_web_default.fetch(webReq, {});
 
     res.statusCode = webRes.status;
-    webRes.headers.forEach((val, key) => {
-      res.setHeader(key, val);
-    });
+    webRes.headers.forEach((val, key) => res.setHeader(key, val));
 
     if (webRes.body) {
       const reader = webRes.body.getReader();
@@ -82,17 +87,20 @@ async function nodeHandlerAdapter(req, res) {
 export default nodeHandlerAdapter;
 `;
 
-    if (content.includes("export { vercel_web_default as default };")) {
-      content = content.replace("export { vercel_web_default as default };", bridgeCode);
-    } else {
-      content += bridgeCode;
-    }
+          if (content.includes("export { vercel_web_default as default };")) {
+            content = content.replace("export { vercel_web_default as default };", bridgeCode);
+          } else {
+            content += bridgeCode;
+          }
 
-    writeFileSync(indexMjsPath, content);
-    console.log("✅ Patched index.mjs: Node.js (req, res) adapter attached to vercel_web_default.");
-  } else {
-    console.log("✅ index.mjs already contains nodeHandlerAdapter.");
+          writeFileSync(indexMjsPath, content);
+          console.log(`✅ Patched ${funcName}/index.mjs: Node.js (req, res) adapter attached.`);
+        } else {
+          console.log(`✅ ${funcName}/index.mjs already contains nodeHandlerAdapter.`);
+        }
+      } catch (e) {
+        console.warn(`⚠️ Could not patch ${funcName}/index.mjs:`, e.message);
+      }
+    }
   }
-} catch (e) {
-  console.warn("⚠️ Could not patch index.mjs:", e.message);
 }
