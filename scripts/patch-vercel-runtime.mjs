@@ -40,9 +40,13 @@ if (!existsSync(functionsDir)) {
     if (existsSync(indexMjsPath)) {
       try {
         let content = readFileSync(indexMjsPath, "utf8");
-        if (!content.includes("nodeHandlerAdapter")) {
-          const bridgeCode = `
+        // Remove previous adapter if present to apply fresh clean adapter
+        if (content.includes("// --- Vercel Node.js Serverless Function Adapter ---")) {
+          const splitPoint = content.indexOf("// --- Vercel Node.js Serverless Function Adapter ---");
+          content = content.slice(0, splitPoint);
+        }
 
+        const bridgeCode = `
 // --- Vercel Node.js Serverless Function Adapter ---
 async function nodeHandlerAdapter(req, res) {
   try {
@@ -61,22 +65,26 @@ async function nodeHandlerAdapter(req, res) {
       }
     }
 
-    const body = (req.method === "GET" || req.method === "HEAD") ? null : req;
-    const webReq = new Request(url, { method: req.method, headers, body, duplex: "half" });
+    const init = {
+      method: req.method,
+      headers,
+    };
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      init.body = req;
+      init.duplex = "half";
+    }
+
+    const webReq = new Request(url, init);
     const webRes = await vercel_web_default.fetch(webReq, {});
 
     res.statusCode = webRes.status;
-    webRes.headers.forEach((val, key) => res.setHeader(key, val));
+    webRes.headers.forEach((val, key) => {
+      res.setHeader(key, val);
+    });
 
-    if (webRes.body) {
-      const reader = webRes.body.getReader();
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        res.write(value);
-      }
-    }
-    res.end();
+    const arrayBuffer = await webRes.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    res.end(buffer);
   } catch (err) {
     console.error("Vercel Serverless Function Error:", err);
     res.statusCode = 500;
@@ -87,17 +95,14 @@ async function nodeHandlerAdapter(req, res) {
 export default nodeHandlerAdapter;
 `;
 
-          if (content.includes("export { vercel_web_default as default };")) {
-            content = content.replace("export { vercel_web_default as default };", bridgeCode);
-          } else {
-            content += bridgeCode;
-          }
-
-          writeFileSync(indexMjsPath, content);
-          console.log(`✅ Patched ${funcName}/index.mjs: Node.js (req, res) adapter attached.`);
+        if (content.includes("export { vercel_web_default as default };")) {
+          content = content.replace("export { vercel_web_default as default };", bridgeCode);
         } else {
-          console.log(`✅ ${funcName}/index.mjs already contains nodeHandlerAdapter.`);
+          content += bridgeCode;
         }
+
+        writeFileSync(indexMjsPath, content);
+        console.log(`✅ Patched ${funcName}/index.mjs: Bulletproof Node.js (req, res) adapter attached.`);
       } catch (e) {
         console.warn(`⚠️ Could not patch ${funcName}/index.mjs:`, e.message);
       }
