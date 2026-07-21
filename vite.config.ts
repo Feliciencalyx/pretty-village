@@ -28,13 +28,6 @@ export default defineConfig({
       server: {
         entry: "server",
       },
-      nitro: {
-        routeRules: {
-          "/**": {
-            headers: SECURITY_HEADERS,
-          },
-        },
-      },
     }),
     react(),
     tailwindcss(),
