@@ -227,11 +227,13 @@ export function ReelsPlayer() {
   useEffect(() => {
     if (!desktopVideoRef.current) return;
     
-    // Set default volume to 20%
-    desktopVideoRef.current.volume = 0.2;
+    try {
+      desktopVideoRef.current.volume = 0.2;
+    } catch {
+      // ignore
+    }
     
     if (isPlayerVisible && isDesktop) {
-      desktopVideoRef.current.load();
       const playPromise = desktopVideoRef.current.play();
       if (playPromise !== undefined) {
         playPromise
@@ -453,12 +455,10 @@ export function ReelsPlayer() {
                         isActive ? "border-fern shadow-md scale-105" : "border-border/40 hover:border-fern/60"
                       }`}
                     >
-                      <video
-                        src={reel.src}
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover pointer-events-none"
-                        preload="metadata"
+                      <img
+                        src="/images/exterior-night.jpg"
+                        alt={`Reel ${reel.id}`}
+                        className="w-full h-full object-cover pointer-events-none opacity-80"
                       />
                       <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
                         <Play className={`w-3.5 h-3.5 text-white ${isActive ? "fill-white" : "opacity-80"}`} />
