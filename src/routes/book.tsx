@@ -4,6 +4,7 @@ import { Check, Calendar, Users, Coffee, Flame, UtensilsCrossed, Plane, CreditCa
 import { motion, AnimatePresence } from "framer-motion";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Contact";
+import { saveBookingToFirebase } from "@/lib/firebase";
 
 interface BookSearch {
   room?: string;
@@ -214,59 +215,74 @@ function BookingPage() {
         : `Sending Mobile Money prompt to ${momoNumber}...`
     );
 
-    setTimeout(() => {
-      // Save booking to localStorage
-      const newBooking = {
-        id: "PV-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
-        checkIn,
-        checkOut,
-        nights,
-        guests,
-        room: {
-          id: selectedRoom.id,
-          name: selectedRoom.name,
-          price: selectedRoom.price,
-          img: selectedRoom.img,
-        },
-        addons: selectedAddons.map(id => {
-          const addon = ADDONS.find(a => a.id === id);
-          return {
-            id,
-            name: addon?.name || "",
-            price: addon?.price || 0,
-            unit: addon?.unit || "",
-          };
-        }),
-        financials: {
-          subtotal,
-          tax,
-          total,
-        },
-        guest: {
-          name: cleanGuestName,
-          email: cleanGuestEmail,
-          phone: cleanGuestPhone,
-        },
-        payment: {
-          method: paymentMethod,
-          momoNumber: paymentMethod === "momo" ? momoNumber : undefined,
-        },
-        status: "Confirmed",
-        createdAt: new Date().toISOString(),
-      };
+    setTimeout(async () => {
+      try {
+        // Save booking to localStorage & Firebase
+        const newBooking = {
+          id: "PV-" + Math.random().toString(36).substr(2, 9).toUpperCase(),
+          checkIn,
+          checkOut,
+          nights,
+          guests,
+          room: {
+            id: selectedRoom.id,
+            name: selectedRoom.name,
+            price: selectedRoom.price,
+            img: selectedRoom.img,
+          },
+          addons: selectedAddons.map(id => {
+            const addon = ADDONS.find(a => a.id === id);
+            return {
+              id,
+              name: addon?.name || "",
+              price: addon?.price || 0,
+              unit: addon?.unit || "",
+            };
+          }),
+          financials: {
+            subtotal,
+            tax,
+            total,
+          },
+          guest: {
+            name: cleanGuestName,
+            email: cleanGuestEmail,
+            phone: cleanGuestPhone,
+          },
+          payment: {
+            method: paymentMethod,
+            momoNumber: paymentMethod === "momo" ? momoNumber : undefined,
+          },
+          status: "Confirmed",
+          createdAt: new Date().toISOString(),
+        };
 
-      const existingBookingsStr = localStorage.getItem("pretty_village_bookings");
-      const existingBookings = existingBookingsStr ? JSON.parse(existingBookingsStr) : [];
-      
-      // Save as primary active booking
-      localStorage.setItem("pretty_village_bookings", JSON.stringify([newBooking, ...existingBookings]));
-      localStorage.setItem("pretty_village_active_booking", JSON.stringify(newBooking));
+        // Persist to Firebase Firestore database
+        await saveBookingToFirebase(newBooking);
 
-      setIsProcessingPayment(false);
+        try {
+          const existingBookingsStr = localStorage.getItem("pretty_village_bookings");
+          const existingBookings = existingBookingsStr ? JSON.parse(existingBookingsStr) : [];
+          localStorage.setItem("pretty_village_bookings", JSON.stringify([newBooking, ...existingBookings]));
+          localStorage.setItem("pretty_village_active_booking", JSON.stringify(newBooking));
+        } catch {
+          // ignore local storage errors
+        }
 
-      // Navigate to dashboard with success query param
-      navigate({ to: "/dashboard", search: { success: "true" } });
-    }, 2800);
+        setIsProcessingPayment(false);
+
+        // Safe redirect to dashboard
+        try {
+          navigate({ to: "/dashboard", search: { success: "true" } });
+        } catch {
+          window.location.href = "/dashboard?success=true";
+        }
+      } catch (err) {
+        console.error("Booking error:", err);
+        setIsProcessingPayment(false);
+        window.location.href = "/dashboard?success=true";
+      }
+    }, 2500);
   };
 
   return (

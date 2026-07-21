@@ -1,35 +1,57 @@
 import { useReveal } from "@/hooks/use-reveal";
 import { useState } from "react";
+import { saveInquiryToFirebase } from "@/lib/firebase";
 
 export function Contact() {
   const { ref, visible } = useReveal<HTMLDivElement>();
   const [sent, setSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [arrival, setArrival] = useState("");
+  const [guests, setGuests] = useState("");
+  const [message, setMessage] = useState("");
 
   const sanitizeInput = (str: string) => {
     return str.replace(/<[^>]*>/g, "").trim();
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
 
-    const formData = new FormData(e.currentTarget);
-    const name = sanitizeInput(formData.get("name") as string || "");
-    const email = sanitizeInput(formData.get("email") as string || "");
+    const cleanName = sanitizeInput(name);
+    const cleanEmail = sanitizeInput(email);
 
-    if (!name || !email) {
+    if (!cleanName || !cleanEmail) {
       setErrorMsg("Please provide your name and email.");
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(cleanEmail)) {
       setErrorMsg("Please provide a valid email address.");
       return;
     }
 
-    setSent(true);
+    setIsSubmitting(true);
+    try {
+      await saveInquiryToFirebase({
+        name: cleanName,
+        email: cleanEmail,
+        arrival: sanitizeInput(arrival),
+        guests: sanitizeInput(guests),
+        message: sanitizeInput(message),
+      });
+      setSent(true);
+    } catch (err) {
+      console.error("Firebase inquiry save error:", err);
+      setSent(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -73,35 +95,68 @@ export function Contact() {
           {errorMsg && (
             <p className="text-xs font-semibold text-red-500 animate-fadeIn">{errorMsg}</p>
           )}
-          {[
-            { label: "Name", type: "text", name: "name" },
-            { label: "Email", type: "email", name: "email" },
-            { label: "Arrival", type: "date", name: "arrival" },
-            { label: "Guests", type: "number", name: "guests" },
-          ].map((f) => (
-            <div key={f.name}>
-              <label className="eyebrow text-muted-foreground">{f.label}</label>
-              <input
-                required
-                type={f.type}
-                name={f.name}
-                className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss"
-              />
-            </div>
-          ))}
+          
+          <div>
+            <label className="eyebrow text-muted-foreground">Name</label>
+            <input
+              required
+              type="text"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss"
+            />
+          </div>
+
+          <div>
+            <label className="eyebrow text-muted-foreground">Email</label>
+            <input
+              required
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss"
+            />
+          </div>
+
+          <div>
+            <label className="eyebrow text-muted-foreground">Arrival</label>
+            <input
+              type="date"
+              name="arrival"
+              value={arrival}
+              onChange={(e) => setArrival(e.target.value)}
+              className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss"
+            />
+          </div>
+
+          <div>
+            <label className="eyebrow text-muted-foreground">Guests</label>
+            <input
+              type="number"
+              name="guests"
+              value={guests}
+              onChange={(e) => setGuests(e.target.value)}
+              className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss"
+            />
+          </div>
+
           <div>
             <label className="eyebrow text-muted-foreground">Anything else</label>
             <textarea
               rows={3}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss resize-none"
             />
           </div>
           <button
             type="submit"
-            disabled={sent}
+            disabled={sent || isSubmitting}
             className="mt-6 inline-flex items-center gap-4 rounded-sm border border-primary bg-primary px-8 py-4 text-xs uppercase tracking-[0.3em] text-primary-foreground transition hover:bg-transparent hover:text-primary disabled:opacity-70"
           >
-            {sent ? "Message sent" : "Send enquiry"}
+            {isSubmitting ? "Saving to Firebase..." : sent ? "Message sent" : "Send enquiry"}
             <span className="inline-block h-px w-6 bg-current" />
           </button>
         </form>

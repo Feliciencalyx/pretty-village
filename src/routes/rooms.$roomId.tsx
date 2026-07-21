@@ -148,7 +148,7 @@ function RoomDetails() {
                 />
               </div>
               <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-                {room.images.map((imgUrl, i) => (
+                {room.images.map((imgUrl: string, i: number) => (
                   <button
                     key={i}
                     onClick={() => setActiveImage(imgUrl)}
@@ -199,7 +199,7 @@ function RoomDetails() {
             <div>
               <h3 className="text-xl font-light mb-6 uppercase tracking-wider">Premium Amenities</h3>
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                {room.amenities.map((amenity) => (
+                {room.amenities.map((amenity: string) => (
                   <li key={amenity} className="flex items-start gap-3 text-sm text-foreground/80">
                     <span className="flex items-center justify-center w-5 h-5 rounded-full bg-fern/10 text-fern mt-0.5">
                       <Check className="w-3.5 h-3.5" />
