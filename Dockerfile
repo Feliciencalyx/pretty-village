@@ -5,7 +5,7 @@ WORKDIR /app
 # Step 2: Install dependencies
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # Step 3: Build application for production runtime
 FROM base AS builder
