@@ -4,10 +4,8 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "cross-env NITRO_PRESET=vercel vite build && node scripts/patch-vercel-runtime.mjs",
-    "build:vercel": "cross-env NITRO_PRESET=vercel vite build && node scripts/patch-vercel-runtime.mjs",
-    "build:dev": "vite build --mode development",
+    "dev": "vite",
+    "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."

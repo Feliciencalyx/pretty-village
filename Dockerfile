@@ -1,27 +1,26 @@
-# Step 1: Base image
-FROM node:22-alpine AS base
+# Stage 1: Dependencies
+FROM node:22-alpine AS deps
 WORKDIR /app
-
-# Step 2: Install dependencies
-FROM base AS deps
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Step 3: Build application for production runtime
+# Stage 2: Builder
 FROM base AS builder
+FROM node:22-alpine AS builder
+WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npx vite build && npx nitro build
+RUN npm run build
 
-# Step 4: Production runner stage
-FROM base AS runner
+# Stage 3: Runner (Lightweight static web server)
+FROM node:22-alpine AS runner
+WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
-ENV HOST=0.0.0.0
 
-# Copy output build artifact from builder stage
-COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/dist ./dist
+RUN npm install -g serve
 
 EXPOSE 3000
 
-CMD ["node", ".output/server/index.mjs"]
+CMD ["serve", "-s", "dist", "-l", "3000"]
