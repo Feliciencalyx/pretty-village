@@ -14,6 +14,8 @@ export function Hero() {
         muted
         loop
         playsInline
+        poster="/images/exterior-night.jpg"
+        onError={(e) => { e.currentTarget.style.display = 'none'; }}
         className="absolute inset-0 h-full w-full object-cover"
       >
         <source src="/videos/hero-background.mp4" type="video/mp4" />

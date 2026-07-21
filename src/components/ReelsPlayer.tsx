@@ -534,8 +534,11 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
   useEffect(() => {
     if (!videoRef.current) return;
     
-    // Set default volume to 20%
-    videoRef.current.volume = 0.2;
+    try {
+      videoRef.current.volume = 0.2;
+    } catch {
+      // ignore
+    }
     
     if (isActive && isPlayerVisible) {
       const playPromise = videoRef.current.play();
@@ -549,9 +552,6 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
       }
     } else {
       videoRef.current.pause();
-      if (isPlayerVisible) {
-        videoRef.current.currentTime = 0;
-      }
       setIsPlaying(false);
     }
   }, [isActive, isPlayerVisible]);
@@ -563,11 +563,14 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
-      videoRef.current.play();
-      setIsPlaying(true);
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
     }
     
-    // Quick flash play/pause state indicator overlay
     setShowPlayOverlay(true);
     setTimeout(() => setShowPlayOverlay(false), 500);
   };
@@ -580,23 +583,36 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(window.location.origin + reel.src);
-    alert("Reel video link copied to clipboard!");
+    try {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(window.location.origin + reel.src).catch(() => {});
+      }
+    } catch {
+      // ignore clipboard error on mobile
+    }
   };
 
   return (
     <div className="w-full h-full snap-start snap-always relative overflow-hidden flex flex-col justify-end bg-black">
-      {/* Background HTML5 Video */}
-      <video
-        ref={videoRef}
-        src={reel.src}
-        loop
-        playsInline
-        muted={isMuted}
-        onClick={handleVideoTap}
-        className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-        preload="metadata"
-      />
+      {/* Background HTML5 Video - Only rendered when active to protect mobile GPU memory */}
+      {isActive ? (
+        <video
+          ref={videoRef}
+          src={reel.src}
+          loop
+          playsInline
+          muted={isMuted}
+          onClick={handleVideoTap}
+          className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+          preload="metadata"
+        />
+      ) : (
+        <div 
+          onClick={handleVideoTap}
+          className="absolute inset-0 w-full h-full bg-cover bg-center cursor-pointer opacity-80"
+          style={{ backgroundImage: "url('/images/exterior-night.jpg')" }}
+        />
+      )}
 
       {/* Ambient gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/75 pointer-events-none" />

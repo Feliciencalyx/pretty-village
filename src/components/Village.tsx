@@ -9,6 +9,8 @@ export function Village() {
         muted
         loop
         playsInline
+        poster="/images/exterior-night.jpg"
+        onError={(e) => { e.currentTarget.style.display = 'none'; }}
         className="absolute inset-0 h-full w-full object-cover opacity-40"
       >
         <source src="https://cdn.pixabay.com/video/2020/03/25/34211-401170291_large.mp4" type="video/mp4" />
