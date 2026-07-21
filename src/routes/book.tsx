@@ -579,7 +579,11 @@ function BookingPage() {
                           required
                           maxLength={19}
                           value={cardNumber}
-                          onChange={e => setCardNumber(e.target.value.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim())}
+                          onChange={e => {
+                            const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
+                            const formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
+                            setCardNumber(formatted);
+                          }}
                           className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
                           placeholder="4000 1234 5678 9010"
                         />
@@ -594,7 +598,14 @@ function BookingPage() {
                             required
                             maxLength={5}
                             value={cardExpiry}
-                            onChange={e => setCardExpiry(e.target.value.replace(/(\d{2})(\d{2})/, "$1/$2"))}
+                            onChange={e => {
+                              const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
+                              if (clean.length >= 3) {
+                                setCardExpiry(clean.slice(0, 2) + "/" + clean.slice(2));
+                              } else {
+                                setCardExpiry(clean);
+                              }
+                            }}
                             className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
                             placeholder="12/28"
                           />

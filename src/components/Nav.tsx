@@ -39,8 +39,6 @@ export function Nav() {
       className={`fixed inset-x-0 top-0 z-50 pt-[env(safe-area-inset-top)] transition-all duration-500 ${
         scrolled ? "bg-background/80 backdrop-blur-lg shadow-sm" : "bg-transparent"
       }`}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
     >
       <div className="mx-auto flex max-w-[1600px] items-center justify-between px-6 py-4 md:px-12 md:py-5">
         <Link to="/" className="group flex items-center gap-3 transition active:scale-95 duration-200">
