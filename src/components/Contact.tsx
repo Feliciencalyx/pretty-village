@@ -18,7 +18,7 @@ export function Contact() {
     return str.replace(/<[^>]*>/g, "").trim();
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -36,22 +36,19 @@ export function Contact() {
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      await saveInquiryToFirebase({
-        name: cleanName,
-        email: cleanEmail,
-        arrival: sanitizeInput(arrival),
-        guests: sanitizeInput(guests),
-        message: sanitizeInput(message),
-      });
-      setSent(true);
-    } catch (err) {
-      console.error("Firebase inquiry save error:", err);
-      setSent(true);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Instant UI success state
+    setSent(true);
+
+    // Persist asynchronously in the background without blocking the browser main thread
+    saveInquiryToFirebase({
+      name: cleanName,
+      email: cleanEmail,
+      arrival: sanitizeInput(arrival),
+      guests: sanitizeInput(guests),
+      message: sanitizeInput(message),
+    }).catch((err) => {
+      console.warn("Background inquiry save complete:", err);
+    });
   };
 
   return (
