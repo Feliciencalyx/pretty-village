@@ -11,7 +11,7 @@ RUN npm install
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npx vite build
+RUN npx vite build && npx nitro build
 
 # Step 4: Production runner stage
 FROM base AS runner
