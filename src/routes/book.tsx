@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Check, Calendar, Users, Coffee, Flame, UtensilsCrossed, Plane, CreditCard, ChevronRight, ChevronLeft, ArrowRight, Smartphone } from "lucide-react";
+import { Check, Calendar, Users, Coffee, Flame, UtensilsCrossed, Plane, CreditCard, ChevronRight, ChevronLeft, ArrowRight, Smartphone, ShieldCheck, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Contact";
@@ -574,14 +574,62 @@ function BookingPage() {
               </div>
             )}
 
-            {/* Step 4: Checkout */}
+            {/* Step 4: Final Selection Review & WhatsApp Reservation */}
             {step === 4 && (
               <form onSubmit={handleCheckoutSubmit} className="space-y-8 animate-fadeIn">
-                <h2 className="text-2xl font-light uppercase tracking-wide border-b border-border/40 pb-4">4. Guest Contact & Payment</h2>
+                <h2 className="text-2xl font-light uppercase tracking-wide border-b border-border/40 pb-4">4. Reservation Summary & Contact</h2>
                 
+                {/* Detailed Selection Summary Card */}
+                <div className="p-6 bg-fern/5 border border-fern/20 rounded-3xl space-y-6">
+                  <div className="flex items-center gap-4">
+                    <img src={selectedRoom.img} alt={selectedRoom.name} className="w-20 h-20 rounded-2xl object-cover shadow-sm" />
+                    <div>
+                      <span className="text-[10px] uppercase tracking-widest text-fern font-semibold bg-fern/10 px-2.5 py-1 rounded-full">Selected Suite</span>
+                      <h3 className="text-xl font-light text-foreground mt-1">{selectedRoom.name}</h3>
+                      <p className="text-xs text-muted-foreground">$50 / guest / night</p>
+                    </div>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4 text-xs border-t border-border/20 pt-4">
+                    <div>
+                      <p className="text-muted-foreground uppercase tracking-wider">Check-in / Check-out</p>
+                      <p className="font-medium text-foreground mt-0.5">{checkIn} → {checkOut} ({nights} nights)</p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground uppercase tracking-wider">Occupancy</p>
+                      <p className="font-medium text-foreground mt-0.5">{guests} {guests === 1 ? "Guest" : "Guests"}</p>
+                    </div>
+                  </div>
+
+                  {/* Selected Upgrades List */}
+                  {selectedAddons.length > 0 && (
+                    <div className="border-t border-border/20 pt-4">
+                      <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Selected Services & Upgrades</p>
+                      <div className="space-y-1.5 text-xs">
+                        {selectedAddons.map(id => {
+                          const addon = ADDONS.find(a => a.id === id);
+                          if (!addon) return null;
+                          const price = addon.unit === "per person" ? addon.price * guests : addon.price;
+                          return (
+                            <div key={id} className="flex justify-between items-center text-foreground font-medium">
+                              <span>✓ {addon.name}</span>
+                              <span className="font-mono text-fern">+${price}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center border-t border-border/20 pt-4">
+                    <span className="text-xs uppercase tracking-wider font-semibold text-foreground">Total Amount to be Paid (Pay on Arrival):</span>
+                    <span className="text-3xl font-light font-mono text-fern">${total.toLocaleString()}</span>
+                  </div>
+                </div>
+
                 {/* Contact Info */}
-                <div className="space-y-4">
-                  <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Contact Details</h3>
+                <div className="space-y-4 pt-2">
+                  <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Guest Contact Details</h3>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-1.5">
                       <label htmlFor="fullname" className="text-xs uppercase tracking-widest text-muted-foreground">Full Name</label>
@@ -592,7 +640,7 @@ function BookingPage() {
                         value={guestName}
                         onChange={e => setGuestName(e.target.value)}
                         className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all"
-                        placeholder="John Doe"
+                        placeholder="e.g. Jean Baptiste"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
@@ -604,11 +652,11 @@ function BookingPage() {
                         value={guestEmail}
                         onChange={e => setGuestEmail(e.target.value)}
                         className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all"
-                        placeholder="john@example.com"
+                        placeholder="jean@example.com"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5 sm:col-span-2">
-                      <label htmlFor="phone" className="text-xs uppercase tracking-widest text-muted-foreground">Phone Number</label>
+                      <label htmlFor="phone" className="text-xs uppercase tracking-widest text-muted-foreground">Phone / WhatsApp Number</label>
                       <input 
                         id="phone"
                         type="tel" 
@@ -622,32 +670,15 @@ function BookingPage() {
                   </div>
                 </div>
 
-                {/* Total to be Paid Summary */}
-                <div className="space-y-4 pt-4 border-t border-border/40">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-fern" /> Payment & Settlement Summary
-                    </h3>
-                    <span className="text-[10px] uppercase tracking-widest text-fern bg-fern/10 px-3 py-1 rounded-full font-semibold">Pay on Arrival</span>
-                  </div>
-
-                  <div className="p-6 bg-fern/5 border border-fern/20 rounded-3xl space-y-3">
-                    <div className="flex justify-between items-baseline">
-                      <span className="text-xs uppercase tracking-wider text-muted-foreground">Total to be Paid:</span>
-                      <span className="text-3xl font-light font-mono text-fern">${total.toLocaleString()}</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed pt-3 border-t border-border/20">
-                      💡 <strong>No online card payment required.</strong> The total amount of <strong className="text-foreground font-mono">${total.toLocaleString()}</strong> will be settled directly upon check-in or via Mobile/WhatsApp host coordination.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Submit button inside form for step 4 */}
+                {/* Submit button: Sends directly to WhatsApp and Email */}
                 <button
                   type="submit"
-                  className="w-full mt-8 bg-fern text-forest font-semibold uppercase tracking-[0.25em] text-xs py-5 rounded-2xl flex items-center justify-center gap-3 transition hover:bg-mist hover:text-forest ios-springy-btn shadow-md animate-pulse"
+                  className="w-full mt-8 bg-[#25D366] text-white font-semibold uppercase tracking-[0.25em] text-xs py-5 rounded-2xl flex items-center justify-center gap-3 transition hover:bg-[#20ba59] ios-springy-btn shadow-xl border border-white/20 active:scale-95"
                 >
-                  Confirm & Reserve Suite (${total.toLocaleString()}) <ArrowRight className="w-4 h-4" />
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.144 4.18 4.246-1.113z" />
+                  </svg>
+                  Reserve & Send Details via WhatsApp (${total.toLocaleString()})
                 </button>
               </form>
             )}
