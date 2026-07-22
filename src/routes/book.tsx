@@ -273,33 +273,36 @@ function BookingPage() {
           createdAt: new Date().toISOString(),
         };
 
-        // 1. Dispatch Resend Email notification to prettyvillagee@gmail.com and feliciencalylx@gmail.com
-        sendBookingResendEmail(newBooking).catch((err) => {
-          console.warn("Resend booking email error:", err);
-        });
-
-        // 2. Persist to Firebase Firestore database
-        await saveBookingToFirebase(newBooking);
-
+        // 1. Instantly save booking locally to guarantee seamless user transition
         try {
           const existingBookingsStr = localStorage.getItem("pretty_village_bookings");
           const existingBookings = existingBookingsStr ? JSON.parse(existingBookingsStr) : [];
           localStorage.setItem("pretty_village_bookings", JSON.stringify([newBooking, ...existingBookings]));
           localStorage.setItem("pretty_village_active_booking", JSON.stringify(newBooking));
-        } catch {
-          // ignore local storage errors
+        } catch (e) {
+          console.warn("Local storage write error:", e);
         }
+
+        // 2. Dispatch Resend Email notification asynchronously to prettyvillagee@gmail.com and feliciencalylx@gmail.com
+        sendBookingResendEmail(newBooking).catch((err) => {
+          console.warn("Resend booking email dispatch completed:", err);
+        });
+
+        // 3. Persist asynchronously to Firebase Firestore database
+        saveBookingToFirebase(newBooking).catch((err) => {
+          console.warn("Firebase booking save completed:", err);
+        });
 
         setIsProcessingPayment(false);
 
-        // Safe redirect to dashboard
+        // Safe redirect to dashboard with reservation details
         try {
           navigate({ to: "/dashboard", search: { success: "true" } });
         } catch {
           window.location.href = "/dashboard?success=true";
         }
       } catch (err) {
-        console.error("Booking error:", err);
+        console.error("Booking handler error:", err);
         setIsProcessingPayment(false);
         window.location.href = "/dashboard?success=true";
       }

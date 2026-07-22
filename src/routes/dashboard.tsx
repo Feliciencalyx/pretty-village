@@ -195,7 +195,12 @@ function DashboardPage() {
 
   const getWhatsAppLink = (phone: string = "250792500176") => {
     if (!booking) return "#";
-    const addonsText = booking.addons.length > 0 
+    const guestName = booking.guest?.name || "Guest";
+    const guestEmail = booking.guest?.email || "N/A";
+    const guestPhone = booking.guest?.phone || "N/A";
+    const roomName = booking.room?.name || "Pretty Village Suite";
+    const totalAmount = booking.financials?.total ?? 0;
+    const addonsList = (booking.addons && booking.addons.length > 0)
       ? booking.addons.map(a => `- ${a.name}`).join("\n")
       : "- None";
 
@@ -203,21 +208,21 @@ function DashboardPage() {
 `*🏡 WEBSITE ONLINE BOOKING - Pretty Village Musanze* ✨
 -----------------------------------------
 *Source:* Official Website
-*Booking ID:* ${booking.id}
-*Guest Name:* ${booking.guest.name}
-*Email:* ${booking.guest.email}
-*Phone:* ${booking.guest.phone}
+*Booking ID:* ${booking.id || "PV-RESERVATION"}
+*Guest Name:* ${guestName}
+*Email:* ${guestEmail}
+*Phone:* ${guestPhone}
 
-*Suite:* ${booking.room.name}
-*Check-in:* ${booking.checkIn}
-*Check-out:* ${booking.checkOut}
-*Duration:* ${booking.nights} nights
-*Guests:* ${booking.guests} guest(s)
+*Suite:* ${roomName}
+*Check-in:* ${booking.checkIn || "N/A"}
+*Check-out:* ${booking.checkOut || "N/A"}
+*Duration:* ${booking.nights || 1} nights
+*Guests:* ${booking.guests || 1} guest(s)
 
 *Upgrades Selected:*
-${addonsText}
+${addonsList}
 
-*Total Paid:* $${booking.financials.total}
+*Total to be Paid (Pay on Arrival):* $${totalAmount.toLocaleString()}
 -----------------------------------------
 Thank you! Please confirm my stay.`
     );
@@ -226,40 +231,47 @@ Thank you! Please confirm my stay.`
 
   const getEmailLink = () => {
     if (!booking) return "#";
-    const addonsText = booking.addons.length > 0 
+    const guestName = booking.guest?.name || "Guest";
+    const guestEmail = booking.guest?.email || "N/A";
+    const guestPhone = booking.guest?.phone || "N/A";
+    const roomName = booking.room?.name || "Pretty Village Suite";
+    const totalAmount = booking.financials?.total ?? 0;
+    const addonsList = (booking.addons && booking.addons.length > 0)
       ? booking.addons.map(a => `- ${a.name}`).join("\n")
       : "- None";
 
-    const subject = encodeURIComponent(`🌐 [Website Reservation] Booking Confirmation - ${booking.guest.name} (${booking.id})`);
+    const subject = encodeURIComponent(`🌐 [Website Reservation] Booking Confirmation - ${guestName} (${booking.id || "PV-RESERVATION"})`);
     const body = encodeURIComponent(
 `Dear Pretty Village Management,
 
 Please find the details for my website booking reservation below:
 
 Source: Official Website
-Booking ID: ${booking.id}
-Guest Name: ${booking.guest.name}
-Email: ${booking.guest.email}
-Phone: ${booking.guest.phone}
+Booking ID: ${booking.id || "PV-RESERVATION"}
+Guest Name: ${guestName}
+Email: ${guestEmail}
+Phone: ${guestPhone}
 
-Suite: ${booking.room.name}
-Check-in: ${booking.checkIn}
-Check-out: ${booking.checkOut}
-Duration: ${booking.nights} nights
-Guests: ${booking.guests} guest(s)
+Suite: ${roomName}
+Check-in: ${booking.checkIn || "N/A"}
+Check-out: ${booking.checkOut || "N/A"}
+Duration: ${booking.nights || 1} nights
+Guests: ${booking.guests || 1} guest(s)
 
 Upgrades Selected:
-${addonsText}
+${addonsList}
 
-Total Paid: $${booking.financials.total}
+Total to be Paid (Pay on Arrival): $${totalAmount.toLocaleString()}
 
 Please review and confirm my stay.
 
 Best regards,
-${booking.guest.name}`
+${guestName}`
     );
     return `mailto:prettyvillagee@gmail.com,feliciencalylx@gmail.com?subject=${subject}&body=${body}`;
   };
+
+  const welcomeName = booking.guest?.name ? booking.guest.name.split(" ")[0] : "Guest";
 
   return (
     <main className="min-h-screen bg-background text-foreground pt-24">
@@ -270,7 +282,7 @@ ${booking.guest.name}`
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <p className="eyebrow text-fern">Guest Portal</p>
-            <h1 className="text-4xl md:text-5xl font-light mt-2">Welcome, {booking.guest.name.split(" ")[0]}</h1>
+            <h1 className="text-4xl md:text-5xl font-light mt-2">Welcome, {welcomeName}</h1>
           </div>
           <div className="flex items-center gap-4 text-xs font-medium uppercase tracking-wider">
             {isDemo ? (
@@ -335,16 +347,16 @@ ${booking.guest.name}`
             {/* Stay Details Card */}
             <div className="border border-border/40 bg-card rounded-3xl shadow-sm overflow-hidden">
               <div className="relative h-64 bg-forest flex items-end">
-                <img src={booking.room.img} alt={booking.room.name} className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                <img src={booking.room?.img || "/images/bedroom-daylight.jpg"} alt={booking.room?.name || "Suite"} className="absolute inset-0 w-full h-full object-cover opacity-50" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
                 <div className="relative z-10 p-6 md:p-8 flex flex-col sm:flex-row sm:items-end justify-between w-full gap-4">
                   <div>
                     <span className="text-[10px] uppercase tracking-widest text-fern font-semibold bg-forest/80 px-2 py-0.5 rounded-full">Residence</span>
-                    <h2 className="text-3xl font-light text-mist mt-1">{booking.room.name}</h2>
+                    <h2 className="text-3xl font-light text-mist mt-1">{booking.room?.name || "Boutique Suite"}</h2>
                   </div>
                   <div className="text-right">
                     <p className="text-xs uppercase tracking-wider text-mist/60">Booking ID</p>
-                    <p className="font-mono text-base font-medium text-mist">{booking.id}</p>
+                    <p className="font-mono text-base font-medium text-mist">{booking.id || "PV-789X9"}</p>
                   </div>
                 </div>
               </div>
@@ -355,19 +367,19 @@ ${booking.guest.name}`
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Check-in</span>
-                      <span className="font-medium flex items-center gap-1.5"><Calendar className="w-4 h-4 text-fern" /> {booking.checkIn}</span>
+                      <span className="font-medium flex items-center gap-1.5"><Calendar className="w-4 h-4 text-fern" /> {booking.checkIn || "N/A"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Check-out</span>
-                      <span className="font-medium flex items-center gap-1.5"><Calendar className="w-4 h-4 text-fern" /> {booking.checkOut}</span>
+                      <span className="font-medium flex items-center gap-1.5"><Calendar className="w-4 h-4 text-fern" /> {booking.checkOut || "N/A"}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Duration</span>
-                      <span className="font-medium">{booking.nights} nights</span>
+                      <span className="font-medium">{booking.nights || 1} nights</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Guests</span>
-                      <span className="font-medium">{booking.guests} guests</span>
+                      <span className="font-medium">{booking.guests || 1} guests</span>
                     </div>
                   </div>
                 </div>
@@ -376,18 +388,18 @@ ${booking.guest.name}`
                   <h3 className="text-xs eyebrow text-muted-foreground border-b border-border/40 pb-2">Billing Invoice</h3>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Subtotal</span>
-                      <span className="font-mono font-medium">${booking.financials.subtotal.toLocaleString()}</span>
+                      <span className="text-muted-foreground">Base Stay Subtotal</span>
+                      <span className="font-mono font-medium">${(booking.financials?.subtotal ?? 0).toLocaleString()}</span>
                     </div>
-                    {booking.financials.tax > 0 && (
+                    {(booking.financials?.tax ?? 0) > 0 && (
                       <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">Tourism Tax (15%)</span>
-                        <span className="font-mono font-medium">${booking.financials.tax.toLocaleString()}</span>
+                        <span className="text-muted-foreground">Tourism Tax</span>
+                        <span className="font-mono font-medium">${(booking.financials?.tax ?? 0).toLocaleString()}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-base font-semibold pt-2 border-t border-border/40 text-fern">
                       <span className="font-light text-xs uppercase tracking-wider text-foreground">Total to be Paid (Pay on Arrival)</span>
-                      <span className="font-mono">${booking.financials.total.toLocaleString()}</span>
+                      <span className="font-mono">${(booking.financials?.total ?? 0).toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
