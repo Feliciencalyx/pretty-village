@@ -26,7 +26,7 @@ const ROOMS = [
     price: 50,
     tag: "One bedroom · Deluxe Suite",
     img: "/images/bedroom-daylight.jpg",
-    maxGuests: 2,
+    maxGuests: 12,
   },
   {
     id: "karisimbi-suite",
@@ -34,7 +34,7 @@ const ROOMS = [
     price: 50,
     tag: "One bedroom · Ambient Suite",
     img: "/images/bedroom-blue-light.jpg",
-    maxGuests: 2,
+    maxGuests: 12,
   },
 ];
 
@@ -472,13 +472,13 @@ function BookingPage() {
                     <span id="guests-count" className="flex-1 text-center text-sm font-medium">{guests}</span>
                     <button 
                       type="button"
-                      onClick={() => setGuests(prev => Math.min(4, prev + 1))}
+                      onClick={() => setGuests(prev => Math.min(12, prev + 1))}
                       className="w-10 h-10 hover:bg-white/40 rounded-xl transition text-lg font-light focus:outline-none flex items-center justify-center ios-springy-btn"
                     >
                       +
                     </button>
                   </div>
-                  <span className="text-xs text-muted-foreground mt-1">Adults and children (Maximum 4 guests total)</span>
+                  <span className="text-xs text-muted-foreground mt-1">Adults and children (Maximum 12 guests total)</span>
                 </div>
               </div>
             )}
