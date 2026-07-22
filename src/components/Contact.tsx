@@ -93,10 +93,14 @@ export function Contact() {
             </div>
 
             <div>
-              <p className="eyebrow text-muted-foreground">Emails</p>
-              <p className="mt-2 text-foreground/80 font-light space-y-1">
-                <a href="mailto:prettyvillagee@gmail.com" className="block hover:underline text-moss hover:text-primary transition">📧 prettyvillagee@gmail.com</a>
-                <a href="mailto:feliciencalylx@gmail.com" className="block hover:underline text-moss hover:text-primary transition">📧 feliciencalylx@gmail.com</a>
+              <p className="eyebrow text-muted-foreground">Email</p>
+              <p className="mt-2 text-foreground/80 font-light">
+                <a href="mailto:prettyvillagee@gmail.com" className="inline-flex items-center gap-2 hover:underline text-moss hover:text-primary transition">
+                  <svg className="w-4 h-4 fill-current text-moss" viewBox="0 0 24 24">
+                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                  </svg>
+                  prettyvillagee@gmail.com
+                </a>
               </p>
             </div>
 
