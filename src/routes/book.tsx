@@ -77,9 +77,10 @@ function BookingPage() {
   const search = Route.useSearch() as BookSearch;
   const navigate = useNavigate();
 
-  // Step 1 State: Dates & Guests
+  // Step 1 State: Dates, Duration & Guests
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
+  const [nights, setNights] = useState(2);
   const [guests, setGuests] = useState(1);
 
   // Step 2 State: Room Selection
@@ -107,26 +108,54 @@ function BookingPage() {
   // Setup default dates on mount
   useEffect(() => {
     const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 2);
+    const defaultNights = 2;
+    const checkoutDate = new Date();
+    checkoutDate.setDate(today.getDate() + defaultNights);
     
     setCheckIn(today.toISOString().split("T")[0]);
-    setCheckOut(tomorrow.toISOString().split("T")[0]);
+    setCheckOut(checkoutDate.toISOString().split("T")[0]);
+    setNights(defaultNights);
   }, []);
 
-  const selectedRoom = ROOMS.find(r => r.id === selectedRoomId) || ROOMS[0];
-
-  // Helper calculations
-  const calculateNights = () => {
-    if (!checkIn || !checkOut) return 1;
-    const start = new Date(checkIn);
-    const end = new Date(checkOut);
-    const diff = end.getTime() - start.getTime();
-    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    return days > 0 ? days : 1;
+  const handleNightsChange = (newNights: number) => {
+    const numNights = Math.max(1, Math.min(60, newNights));
+    setNights(numNights);
+    if (checkIn) {
+      const start = new Date(checkIn);
+      if (!isNaN(start.getTime())) {
+        const end = new Date(start);
+        end.setDate(start.getDate() + numNights);
+        setCheckOut(end.toISOString().split("T")[0]);
+      }
+    }
   };
 
-  const nights = calculateNights();
+  const handleCheckInChange = (newCheckIn: string) => {
+    setCheckIn(newCheckIn);
+    if (newCheckIn) {
+      const start = new Date(newCheckIn);
+      if (!isNaN(start.getTime())) {
+        const end = new Date(start);
+        end.setDate(start.getDate() + nights);
+        setCheckOut(end.toISOString().split("T")[0]);
+      }
+    }
+  };
+
+  const handleCheckOutChange = (newCheckOut: string) => {
+    setCheckOut(newCheckOut);
+    if (checkIn && newCheckOut) {
+      const start = new Date(checkIn);
+      const end = new Date(newCheckOut);
+      const diff = end.getTime() - start.getTime();
+      const calculatedDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      if (calculatedDays > 0) {
+        setNights(calculatedDays);
+      }
+    }
+  };
+
+  const selectedRoom = ROOMS.find(r => r.id === selectedRoomId) || ROOMS[0];
   const roomTotal = selectedRoom.price * nights;
   const discount = nights >= 7 ? Math.round(roomTotal * 0.05) : 0;
   
@@ -334,10 +363,73 @@ function BookingPage() {
           {/* Main Wizard Form */}
           <div className="bg-card border border-border/40 p-8 rounded-3xl shadow-sm min-h-[400px] flex flex-col justify-between">
             
-            {/* Step 1: Dates & Guests */}
+            {/* Step 1: Dates, Duration & Guests */}
             {step === 1 && (
               <div className="space-y-8 animate-fadeIn">
-                <h2 className="text-2xl font-light uppercase tracking-wide border-b border-border/40 pb-4">1. Dates & Occupancy</h2>
+                <h2 className="text-2xl font-light uppercase tracking-wide border-b border-border/40 pb-4">1. Dates & Duration</h2>
+                
+                {/* Duration Selector Section */}
+                <div className="p-6 bg-fern/5 border border-fern/20 rounded-3xl space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                      <label htmlFor="nights-count" className="text-xs uppercase tracking-widest text-fern font-semibold flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-fern" /> Duration of Stay (Nights)
+                      </label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Select duration in nights — 7+ nights receive an automatic 5% weekly discount!
+                      </p>
+                    </div>
+
+                    {/* Counter Stepper & Input */}
+                    <div className="flex items-center border border-border/20 rounded-2xl overflow-hidden bg-background p-1 shadow-sm">
+                      <button 
+                        type="button"
+                        onClick={() => handleNightsChange(nights - 1)}
+                        className="w-10 h-10 hover:bg-muted/40 rounded-xl transition text-lg font-light focus:outline-none flex items-center justify-center ios-springy-btn"
+                      >
+                        -
+                      </button>
+                      <input
+                        id="nights-count"
+                        type="number"
+                        min={1}
+                        max={60}
+                        value={nights}
+                        onChange={e => handleNightsChange(parseInt(e.target.value) || 1)}
+                        className="w-14 text-center text-sm font-semibold bg-transparent focus:outline-none"
+                      />
+                      <span className="text-xs font-medium text-muted-foreground mr-3 select-none">nights</span>
+                      <button 
+                        type="button"
+                        onClick={() => handleNightsChange(nights + 1)}
+                        className="w-10 h-10 hover:bg-muted/40 rounded-xl transition text-lg font-light focus:outline-none flex items-center justify-center ios-springy-btn"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Quick Duration Preset Pills */}
+                  <div className="flex items-center gap-2 flex-wrap pt-3 border-t border-fern/10">
+                    <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium mr-1">Quick Presets:</span>
+                    {[1, 2, 3, 5, 7, 14].map(n => (
+                      <button
+                        key={n}
+                        type="button"
+                        onClick={() => handleNightsChange(n)}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition ios-springy-btn ${
+                          nights === n 
+                            ? "bg-fern text-forest font-semibold shadow-sm" 
+                            : "bg-background border border-border/40 hover:border-fern text-foreground/80"
+                        }`}
+                      >
+                        {n} {n === 1 ? "Night" : "Nights"} {n >= 7 ? "✨ (5% OFF)" : ""}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Dates Grid */}
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="flex flex-col gap-2">
                     <label htmlFor="check-in" className="text-xs uppercase tracking-widest text-muted-foreground font-medium flex items-center gap-2">
@@ -347,7 +439,7 @@ function BookingPage() {
                       id="check-in"
                       type="date" 
                       value={checkIn}
-                      onChange={e => setCheckIn(e.target.value)}
+                      onChange={e => handleCheckInChange(e.target.value)}
                       className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all"
                     />
                   </div>
@@ -359,7 +451,7 @@ function BookingPage() {
                       id="check-out"
                       type="date" 
                       value={checkOut}
-                      onChange={e => setCheckOut(e.target.value)}
+                      onChange={e => handleCheckOutChange(e.target.value)}
                       className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all"
                     />
                   </div>
@@ -371,6 +463,7 @@ function BookingPage() {
                   </label>
                   <div className="flex items-center border border-border/20 rounded-2xl overflow-hidden bg-muted/40 p-1">
                     <button 
+                      type="button"
                       onClick={() => setGuests(prev => Math.max(1, prev - 1))}
                       className="w-10 h-10 hover:bg-white/40 rounded-xl transition text-lg font-light focus:outline-none flex items-center justify-center ios-springy-btn"
                     >
@@ -378,6 +471,7 @@ function BookingPage() {
                     </button>
                     <span id="guests-count" className="flex-1 text-center text-sm font-medium">{guests}</span>
                     <button 
+                      type="button"
                       onClick={() => setGuests(prev => Math.min(4, prev + 1))}
                       className="w-10 h-10 hover:bg-white/40 rounded-xl transition text-lg font-light focus:outline-none flex items-center justify-center ios-springy-btn"
                     >
