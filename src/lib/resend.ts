@@ -119,11 +119,12 @@ async function sendEmailRequest(subject: string, htmlContent: string, textConten
  * Sends a notification email for new website inquiries/messages.
  */
 export async function sendInquiryResendEmail(inquiry: InquiryPayload) {
-  const subject = `📩 New Enquiry from ${inquiry.name} - Pretty Village Musanze`;
+  const subject = `🌐 [Website Enquiry] New Message from ${inquiry.name} - Pretty Village Musanze`;
 
   const textContent = `
-NEW ENQUIRY RECEIVED
+WEBSITE ENQUIRY RECEIVED
 ------------------------------------
+Source: Official Website Form
 Guest Name: ${inquiry.name}
 Email: ${inquiry.email}
 Arrival Date: ${inquiry.arrival || "Not specified"}
@@ -180,7 +181,7 @@ Target Inboxes: prettyvillagee@gmail.com & feliciencalylx@gmail.com
  * Sends a notification email for new booking reservations.
  */
 export async function sendBookingResendEmail(booking: BookingPayload) {
-  const subject = `✨ New Booking Reservation (${booking.id}) - ${booking.guest.name}`;
+  const subject = `✨ [Website Reservation] Booking Confirmation (${booking.id}) - ${booking.guest.name}`;
 
   const addonsList = booking.addons.length > 0
     ? booking.addons.map((a) => `- ${a.name} ($${a.price})`).join("\n")

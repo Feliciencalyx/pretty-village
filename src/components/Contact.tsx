@@ -62,7 +62,7 @@ export function Contact() {
 
   const getWhatsAppEnquiryUrl = (phone: string) => {
     const text = encodeURIComponent(
-      `Hello Pretty Village Musanze! 🏡\nMy name is ${name || "a guest"}.\nEmail: ${email || "N/A"}\nI would like to enquire about availability and rates for ${arrival || "upcoming dates"}${guests ? ` for ${guests} guests` : ""}.\n${message ? `Note: ${message}` : ""}`
+      `*🌐 WEBSITE FORM ENQUIRY - Pretty Village Musanze* 🏡✨\n----------------------------------------\n*Source:* Official Website\n*Guest Name:* ${name || "Guest"}\n*Email:* ${email || "N/A"}\n*Arrival Date:* ${arrival || "Flexible"}\n*Guests:* ${guests || "N/A"}\n*Message:* ${message || "No additional message"}`
     );
     return `https://wa.me/${phone}?text=${text}`;
   };

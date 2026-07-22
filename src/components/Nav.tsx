@@ -119,7 +119,7 @@ export function Nav() {
       {/* Fixed Floating WhatsApp Button */}
       <div className="fixed bottom-6 right-6 z-40">
         <a
-          href="https://wa.me/250792500176?text=Hello%20Pretty%20Village%20Musanze!%20I%20have%20an%20enquiry."
+          href="https://wa.me/250792500176?text=%2A%F0%9F%8C%90%20WEBSITE%20DIRECT%20ENQUIRY%20-%20Pretty%20Village%20Musanze%2A%20%F0%9F%8F%A1%E2%9C%A8%0A----------------------------------------%0AHello!%20I%20am%20contacting%20you%20directly%20from%20your%20Official%20Website.%0AI%20would%20like%20to%20enquire%20about%20suite%20availability%20and%20rates%20for%20my%20upcoming%20stay%20in%20Musanze."
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 bg-[#25D366] text-white px-4 py-3 rounded-full shadow-2xl hover:bg-[#20ba59] hover:scale-105 transition-all duration-300 ios-springy-btn active:scale-95 border border-white/20"

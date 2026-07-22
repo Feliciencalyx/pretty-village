@@ -200,8 +200,9 @@ function DashboardPage() {
       : "- None";
 
     const text = encodeURIComponent(
-`*New Booking Request - Pretty Village* 🏡✨
+`*🏡 WEBSITE ONLINE BOOKING - Pretty Village Musanze* ✨
 -----------------------------------------
+*Source:* Official Website
 *Booking ID:* ${booking.id}
 *Guest Name:* ${booking.guest.name}
 *Email:* ${booking.guest.email}
@@ -229,12 +230,13 @@ Thank you! Please confirm my stay.`
       ? booking.addons.map(a => `- ${a.name}`).join("\n")
       : "- None";
 
-    const subject = encodeURIComponent(`Booking Reservation Confirmation - ${booking.guest.name} (${booking.id})`);
+    const subject = encodeURIComponent(`🌐 [Website Reservation] Booking Confirmation - ${booking.guest.name} (${booking.id})`);
     const body = encodeURIComponent(
 `Dear Pretty Village Management,
 
-Please find the details for my booking reservation below:
+Please find the details for my website booking reservation below:
 
+Source: Official Website
 Booking ID: ${booking.id}
 Guest Name: ${booking.guest.name}
 Email: ${booking.guest.email}
