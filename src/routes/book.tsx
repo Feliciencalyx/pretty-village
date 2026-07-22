@@ -228,24 +228,8 @@ function BookingPage() {
       return;
     }
 
-    if (paymentMethod === "card") {
-      if (!cardNumber || !cardExpiry || !cardCvc) {
-        setErrorMsg("Please complete your credit card details.");
-        return;
-      }
-    } else {
-      if (!momoNumber) {
-        setErrorMsg("Please enter your MTN Mobile Money number.");
-        return;
-      }
-    }
-
     setIsProcessingPayment(true);
-    setPaymentStatusMessage(
-      paymentMethod === "card"
-        ? "Authorizing card payment with your bank..."
-        : `Sending Mobile Money prompt to ${momoNumber}...`
-    );
+    setPaymentStatusMessage("Confirming reservation and sending host notifications...");
 
     setTimeout(async () => {
       try {
@@ -635,124 +619,24 @@ function BookingPage() {
                   </div>
                 </div>
 
-                {/* Simulated Payment */}
-                <div className="space-y-5 pt-4 border-t border-border/40">
+                {/* Total to be Paid Summary */}
+                <div className="space-y-4 pt-4 border-t border-border/40">
                   <div className="flex justify-between items-center">
                     <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                      <CreditCard className="w-4 h-4 text-fern" /> Payment Information
+                      <ShieldCheck className="w-4 h-4 text-fern" /> Payment & Settlement Summary
                     </h3>
-                    <span className="text-[10px] uppercase tracking-widest text-fern bg-fern/10 px-2.5 py-1 rounded-full font-semibold">Sandbox Mode</span>
+                    <span className="text-[10px] uppercase tracking-widest text-fern bg-fern/10 px-3 py-1 rounded-full font-semibold">Pay on Arrival</span>
                   </div>
 
-                  {/* Payment Method Selector */}
-                  <div className="grid grid-cols-2 gap-2 p-1.5 bg-muted/30 border border-border/20 rounded-2xl">
-                    <button
-                      type="button"
-                      onClick={() => setPaymentMethod("card")}
-                      className={`py-3.5 rounded-xl text-[10px] md:text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 ios-springy-btn ${
-                        paymentMethod === "card"
-                          ? "bg-forest text-mist shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <CreditCard className="w-4 h-4" /> Credit Card
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setPaymentMethod("momo");
-                        if (!momoNumber) setMomoNumber(guestPhone);
-                      }}
-                      className={`py-3.5 rounded-xl text-[10px] md:text-xs font-semibold uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 ios-springy-btn ${
-                        paymentMethod === "momo"
-                          ? "bg-forest text-mist shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      <Smartphone className="w-4 h-4" /> MoMo Pay
-                    </button>
+                  <div className="p-6 bg-fern/5 border border-fern/20 rounded-3xl space-y-3">
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-xs uppercase tracking-wider text-muted-foreground">Total to be Paid:</span>
+                      <span className="text-3xl font-light font-mono text-fern">${total.toLocaleString()}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed pt-3 border-t border-border/20">
+                      💡 <strong>No online card payment required.</strong> The total amount of <strong className="text-foreground font-mono">${total.toLocaleString()}</strong> will be settled directly upon check-in or via Mobile/WhatsApp host coordination.
+                    </p>
                   </div>
-                  
-                  {paymentMethod === "card" ? (
-                    <div className="space-y-4 animate-fadeIn">
-                      <div className="flex flex-col gap-1.5">
-                        <label htmlFor="cardnum" className="text-xs uppercase tracking-widest text-muted-foreground">Card Number</label>
-                        <input 
-                          id="cardnum"
-                          type="text" 
-                          required
-                          maxLength={19}
-                          value={cardNumber}
-                          onChange={e => {
-                            const digits = e.target.value.replace(/\D/g, '').slice(0, 16);
-                            const formatted = digits.replace(/(\d{4})(?=\d)/g, '$1 ');
-                            setCardNumber(formatted);
-                          }}
-                          className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
-                          placeholder="4000 1234 5678 9010"
-                        />
-                      </div>
-
-                      <div className="grid gap-4 grid-cols-2">
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="cardexp" className="text-xs uppercase tracking-widest text-muted-foreground">Expiry (MM/YY)</label>
-                          <input 
-                            id="cardexp"
-                            type="text" 
-                            required
-                            maxLength={5}
-                            value={cardExpiry}
-                            onChange={e => {
-                              const clean = e.target.value.replace(/\D/g, '').slice(0, 4);
-                              if (clean.length >= 3) {
-                                setCardExpiry(clean.slice(0, 2) + "/" + clean.slice(2));
-                              } else {
-                                setCardExpiry(clean);
-                              }
-                            }}
-                            className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
-                            placeholder="12/28"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1.5">
-                          <label htmlFor="cardcvc" className="text-xs uppercase tracking-widest text-muted-foreground">CVC</label>
-                          <input 
-                            id="cardcvc"
-                            type="password" 
-                            required
-                            maxLength={4}
-                            value={cardCvc}
-                            onChange={e => setCardCvc(e.target.value.replace(/\D/g, ''))}
-                            className="p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
-                            placeholder="***"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4 animate-fadeIn">
-                      <div className="flex flex-col gap-1.5">
-                        <label htmlFor="momonum" className="text-xs uppercase tracking-widest text-muted-foreground">MTN Mobile Money Number</label>
-                        <div className="flex gap-2">
-                          <div className="bg-amber-500/10 border border-amber-500/20 px-4 rounded-2xl text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center justify-center tracking-widest select-none">
-                            MTN
-                          </div>
-                          <input 
-                            id="momonum"
-                            type="tel" 
-                            required
-                            value={momoNumber}
-                            onChange={e => setMomoNumber(e.target.value)}
-                            className="flex-1 p-4 bg-muted/40 border-0 rounded-2xl text-sm focus:outline-none focus:bg-background focus:ring-2 focus:ring-fern/40 transition-all tracking-widest"
-                            placeholder="0788 123 456"
-                          />
-                        </div>
-                        <p className="text-[10px] text-muted-foreground leading-relaxed mt-1">
-                          Enter your active MoMo wallet number. A push authorization prompt will pop up on your phone screen.
-                        </p>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Submit button inside form for step 4 */}
@@ -760,7 +644,7 @@ function BookingPage() {
                   type="submit"
                   className="w-full mt-8 bg-fern text-forest font-semibold uppercase tracking-[0.25em] text-xs py-5 rounded-2xl flex items-center justify-center gap-3 transition hover:bg-mist hover:text-forest ios-springy-btn shadow-md animate-pulse"
                 >
-                  Pay & Confirm Booking (${total.toLocaleString()}) <ArrowRight className="w-4 h-4" />
+                  Confirm & Reserve Suite (${total.toLocaleString()}) <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             )}

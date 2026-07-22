@@ -386,7 +386,7 @@ ${booking.guest.name}`
                       </div>
                     )}
                     <div className="flex justify-between text-base font-semibold pt-2 border-t border-border/40 text-fern">
-                      <span className="font-light text-xs uppercase tracking-wider text-foreground">Total Paid</span>
+                      <span className="font-light text-xs uppercase tracking-wider text-foreground">Total to be Paid (Pay on Arrival)</span>
                       <span className="font-mono">${booking.financials.total.toLocaleString()}</span>
                     </div>
                   </div>
