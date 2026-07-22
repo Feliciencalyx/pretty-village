@@ -111,7 +111,7 @@ function RoomDetails() {
           <div className="bg-forest/45 backdrop-blur-lg border border-white/10 p-6 md:p-8 rounded-3xl max-w-sm w-full shadow-lg">
             <p className="text-xs uppercase tracking-widest text-fern font-semibold">Rate</p>
             <p className="text-3xl font-light text-mist mt-1">
-              ${room.price} <span className="text-sm font-light text-mist/60">/ night</span>
+              $50 <span className="text-sm font-light text-mist/60">/ guest / night</span>
             </p>
             <Link
               to="/book"

@@ -158,7 +158,7 @@ function BookingPage() {
 
   const selectedRoom = ROOMS.find(r => r.id === selectedRoomId) || ROOMS[0];
   const roomsRequired = Math.ceil(guests / 2);
-  const roomTotal = selectedRoom.price * roomsRequired * nights;
+  const roomTotal = 50 * guests * nights;
   const discount = nights >= 7 ? Math.round(roomTotal * 0.05) : 0;
   
   const addonsTotal = selectedAddons.reduce((sum, addonId) => {
@@ -486,7 +486,7 @@ function BookingPage() {
                     </button>
                   </div>
                   <span className="text-xs text-muted-foreground mt-1">
-                    Each suite ($50/night) fits up to 2 guests (1 guest + optional companion). Allocated: <strong className="text-fern font-medium">{roomsRequired} {roomsRequired === 1 ? "suite" : "suites"} (${roomsRequired * 50}/night)</strong>.
+                    Rate: <strong className="text-fern font-medium">$50 / guest / night</strong> ($50 × {guests} {guests === 1 ? "guest" : "guests"} × {nights} {nights === 1 ? "night" : "nights"} = <strong className="text-fern font-medium">${roomTotal}</strong>). Each booked service is added directly to total.
                   </span>
                 </div>
               </div>
@@ -520,7 +520,7 @@ function BookingPage() {
                           <div>
                             <div className="flex justify-between items-start gap-4">
                               <h3 className="text-xl font-light text-foreground">{r.name}</h3>
-                              <p className="text-lg text-fern font-medium">${r.price} <span className="text-xs font-light text-muted-foreground">/ night</span></p>
+                              <p className="text-lg text-fern font-medium">$50 <span className="text-xs font-light text-muted-foreground">/ guest / night</span></p>
                             </div>
                             <p className="text-xs eyebrow text-muted-foreground/80 mt-1">{r.tag}</p>
                             <p className="text-xs text-muted-foreground mt-2">Accommodates up to {r.maxGuests} guests</p>
@@ -848,7 +848,7 @@ function BookingPage() {
               {/* Pricing breakdown */}
               <div className="border-t border-border/40 pt-4 space-y-2 text-sm font-light">
                 <div className="flex justify-between text-muted-foreground text-xs">
-                  <span>{selectedRoom.name} ({roomsRequired} {roomsRequired === 1 ? "suite" : "suites"} × {nights} {nights === 1 ? "night" : "nights"})</span>
+                  <span>{selectedRoom.name} ($50 × {guests} {guests === 1 ? "guest" : "guests"} × {nights} {nights === 1 ? "night" : "nights"})</span>
                   <span className="font-mono">${roomTotal.toLocaleString()}</span>
                 </div>
                 {discount > 0 && (

@@ -8,7 +8,7 @@ const apartments = [
     name: "Bisoke Loft",
     tag: "One bedroom · Deluxe Suite",
     img: "/images/bedroom-daylight.jpg",
-    price: "$50 / night",
+    price: "$50 / guest / night",
     desc: "A bright, modern suite featuring a premium bed, custom gold-accented padded headboard, and a sleek built-in wardrobe. Every suite includes its own private balcony, scenic balcony views, a comfortable bedroom with a single queen bed, and a private ensuite bathroom and toilet.",
   },
   {
@@ -16,7 +16,7 @@ const apartments = [
     name: "Karisimbi Suite",
     tag: "One bedroom · Ambient Suite",
     img: "/images/bedroom-blue-light.jpg",
-    price: "$50 / night",
+    price: "$50 / guest / night",
     desc: "A spacious suite equipped with custom LED mood lighting, polished tile flooring, and premium linens. Every suite includes its own private balcony, scenic balcony views, a comfortable bedroom with a single queen bed, and a private ensuite bathroom and toilet.",
   },
 ];
