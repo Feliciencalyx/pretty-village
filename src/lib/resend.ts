@@ -1,11 +1,11 @@
 // Resend & Direct Email Integration Helper for Pretty Village Musanze
 // Configured to send notifications for inquiries and bookings directly to:
-// 1. prettyvillagee@gmail.com
-// 2. feliciencalylx@gmail.com
+// 1. feliciencalylx@gmail.com
+// 2. prettyvillagee@gmail.com
 
 export const RECIPIENT_EMAILS = [
-  "prettyvillagee@gmail.com",
-  "feliciencalylx@gmail.com"
+  "feliciencalylx@gmail.com",
+  "prettyvillagee@gmail.com"
 ];
 
 export const PRIMARY_PHONE_1 = "0792500176";
@@ -43,18 +43,27 @@ export interface BookingPayload {
   };
 }
 
+const DEFAULT_RESEND_KEY = "re_aApSAYyE_9TBomDrj24ty45Mju7x3aKKj";
+
 /**
- * Sends email via Resend or Web3Forms API to management recipients.
+ * Sends email via Resend API to management recipients.
  */
 async function sendEmailRequest(subject: string, htmlContent: string, textContent: string, replyTo?: string) {
-  const resendApiKey = (import.meta as any).env?.VITE_RESEND_API_KEY || (typeof process !== "undefined" ? process.env?.RESEND_API_KEY : "");
-  const web3FormsKey = (import.meta as any).env?.VITE_WEB3FORMS_ACCESS_KEY || (typeof process !== "undefined" ? process.env?.WEB3FORMS_ACCESS_KEY : "");
+  const resendApiKey = 
+    (import.meta as any).env?.VITE_RESEND_API_KEY || 
+    (typeof process !== "undefined" ? process.env?.RESEND_API_KEY : "") ||
+    DEFAULT_RESEND_KEY;
 
-  let dispatched = false;
-  let errors: string[] = [];
+  if (!resendApiKey) {
+    console.warn("No Resend API Key configured.");
+    return { success: false };
+  }
 
-  // Strategy 1: Attempt Resend API if VITE_RESEND_API_KEY is configured
-  if (resendApiKey && resendApiKey !== "your_resend_api_key_here") {
+  let sentCount = 0;
+  const results = [];
+
+  // Loop over recipients to handle Resend testing sandbox restrictions seamlessly
+  for (const recipient of RECIPIENT_EMAILS) {
     try {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -64,7 +73,7 @@ async function sendEmailRequest(subject: string, htmlContent: string, textConten
         },
         body: JSON.stringify({
           from: "Pretty Village Musanze <onboarding@resend.dev>",
-          to: RECIPIENT_EMAILS,
+          to: recipient,
           reply_to: replyTo,
           subject,
           html: htmlContent,
@@ -74,65 +83,21 @@ async function sendEmailRequest(subject: string, htmlContent: string, textConten
 
       if (res.ok) {
         const data = await res.json();
-        console.log("Resend email successfully sent to inbox:", data);
-        dispatched = true;
-        return { success: true, provider: "Resend", data };
+        console.log(`Resend email successfully sent to ${recipient}:`, data);
+        sentCount++;
+        results.push({ recipient, success: true, data });
       } else {
         const errText = await res.text();
-        errors.push(`Resend error (${res.status}): ${errText}`);
+        console.warn(`Resend email error for ${recipient}:`, res.status, errText);
+        results.push({ recipient, success: false, error: errText });
       }
     } catch (err: any) {
-      errors.push(`Resend exception: ${err?.message || err}`);
+      console.error(`Resend dispatch exception for ${recipient}:`, err);
+      results.push({ recipient, success: false, error: err?.message || err });
     }
   }
 
-  // Strategy 2: Attempt Web3Forms API if VITE_WEB3FORMS_ACCESS_KEY is configured
-  if (web3FormsKey && web3FormsKey !== "your_web3forms_access_key_here") {
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          access_key: web3FormsKey,
-          subject,
-          from_name: "Pretty Village Musanze Website",
-          replyto: replyTo,
-          message: textContent,
-        }),
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        console.log("Web3Forms email successfully sent to inbox:", data);
-        dispatched = true;
-        return { success: true, provider: "Web3Forms", data };
-      } else {
-        const errText = await res.text();
-        errors.push(`Web3Forms error (${res.status}): ${errText}`);
-      }
-    } catch (err: any) {
-      errors.push(`Web3Forms exception: ${err?.message || err}`);
-    }
-  }
-
-  // Fallback: If no API key is provided, log warning for developer configuration
-  if (!dispatched) {
-    console.warn(
-      "⚠️ Real Email Delivery Warning: No active VITE_RESEND_API_KEY or VITE_WEB3FORMS_ACCESS_KEY found in .env.\n" +
-      "To receive emails directly in prettyvillagee@gmail.com & feliciencalylx@gmail.com inbox, add your API key to .env file!\n" +
-      "Dispatched payload preview:",
-      { subject, to: RECIPIENT_EMAILS, textContent }
-    );
-  }
-
-  return { 
-    success: dispatched, 
-    simulated: !dispatched, 
-    errors: errors.length > 0 ? errors : undefined 
-  };
+  return { success: sentCount > 0, results };
 }
 
 /**
