@@ -90,18 +90,13 @@ function BookingPage() {
   // Step 3 State: Add-ons
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
-  // Step 4 State: Billing & Payment Info
+  // Step 4 State: Guest Contact Info
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
   const [guestPhone, setGuestPhone] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
 
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "momo">("card");
-  const [momoNumber, setMomoNumber] = useState("");
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [paymentStatusMessage, setPaymentStatusMessage] = useState("");
+  const [isSubmittingReservation, setIsSubmittingReservation] = useState(false);
+  const [reservationStatusMessage, setReservationStatusMessage] = useState("");
 
   const [step, setStep] = useState(1);
   const [errorMsg, setErrorMsg] = useState("");
@@ -228,8 +223,8 @@ function BookingPage() {
       return;
     }
 
-    setIsProcessingPayment(true);
-    setPaymentStatusMessage("Confirming reservation and sending host notifications...");
+    setIsSubmittingReservation(true);
+    setReservationStatusMessage("Confirming reservation and sending host notifications...");
 
     setTimeout(async () => {
       try {
@@ -266,8 +261,7 @@ function BookingPage() {
             phone: cleanGuestPhone,
           },
           payment: {
-            method: paymentMethod,
-            momoNumber: paymentMethod === "momo" ? momoNumber : undefined,
+            method: "Pay on Arrival",
           },
           status: "Confirmed",
           createdAt: new Date().toISOString(),
@@ -293,7 +287,7 @@ function BookingPage() {
           console.warn("Firebase booking save completed:", err);
         });
 
-        setIsProcessingPayment(false);
+        setIsSubmittingReservation(false);
 
         // Safe redirect to dashboard with reservation details
         try {
@@ -303,10 +297,10 @@ function BookingPage() {
         }
       } catch (err) {
         console.error("Booking handler error:", err);
-        setIsProcessingPayment(false);
+        setIsSubmittingReservation(false);
         window.location.href = "/dashboard?success=true";
       }
-    }, 2500);
+    }, 600);
   };
 
   return (
@@ -794,9 +788,9 @@ function BookingPage() {
 
       <Footer />
 
-      {/* Payment Processing Glassmorphic Modal */}
+      {/* Reservation Confirmation Glassmorphic Modal */}
       <AnimatePresence>
-        {isProcessingPayment && (
+        {isSubmittingReservation && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -816,17 +810,11 @@ function BookingPage() {
               </div>
 
               <div>
-                <h3 className="font-semibold text-lg text-foreground">Processing Payment</h3>
+                <h3 className="font-semibold text-lg text-foreground">Confirming Reservation</h3>
                 <p className="text-sm text-muted-foreground mt-2 leading-relaxed font-light">
-                  {paymentStatusMessage}
+                  {reservationStatusMessage}
                 </p>
               </div>
-
-              {paymentMethod === "momo" && (
-                <div className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-500/10 p-3.5 rounded-2xl border border-amber-500/20 leading-relaxed max-w-[280px] text-left">
-                  <strong>Instruction:</strong> Please keep your mobile phone unlocked. You will see an MTN USSD prompt asking for your MoMo PIN. Enter it to approve.
-                </div>
-              )}
             </motion.div>
           </motion.div>
         )}

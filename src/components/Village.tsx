@@ -1,19 +1,60 @@
+import { useEffect, useRef } from "react";
 import { useReveal } from "@/hooks/use-reveal";
 
 export function Village() {
   const { ref, visible } = useReveal<HTMLDivElement>();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+
+    const startVideo = () => {
+      video.play().catch((err) => {
+        console.log("Village background video waiting for interaction:", err);
+      });
+    };
+
+    startVideo();
+
+    const handleFirstTouch = () => {
+      if (video.paused) {
+        startVideo();
+      }
+      window.removeEventListener("touchstart", handleFirstTouch);
+      window.removeEventListener("scroll", handleFirstTouch);
+      window.removeEventListener("click", handleFirstTouch);
+    };
+
+    window.addEventListener("touchstart", handleFirstTouch, { passive: true });
+    window.addEventListener("scroll", handleFirstTouch, { passive: true });
+    window.addEventListener("click", handleFirstTouch, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", handleFirstTouch);
+      window.removeEventListener("scroll", handleFirstTouch);
+      window.removeEventListener("click", handleFirstTouch);
+    };
+  }, []);
+
   return (
     <section id="village" className="relative overflow-hidden bg-forest py-32 text-mist md:py-48">
       <video
+        ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
+        disablePictureInPicture
         poster="/images/exterior-night.jpg"
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
         className="absolute inset-0 h-full w-full object-cover opacity-40"
       >
         <source src="https://cdn.pixabay.com/video/2020/03/25/34211-401170291_large.mp4" type="video/mp4" />
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-gradient-to-b from-forest via-forest/85 to-forest" />
 

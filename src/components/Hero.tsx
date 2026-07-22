@@ -1,19 +1,60 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export function Hero() {
   const [loaded, setLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 100);
     return () => clearTimeout(t);
   }, []);
 
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Enforce muted programmatically for strict mobile autoplay policies
+    video.muted = true;
+    
+    const startVideo = () => {
+      video.play().catch((err) => {
+        console.log("Autoplay waiting for initial interaction:", err);
+      });
+    };
+
+    startVideo();
+
+    // Fallback: trigger playback on first user gesture if browser blocked quiet autoplay
+    const handleFirstTouch = () => {
+      if (video.paused) {
+        startVideo();
+      }
+      window.removeEventListener("touchstart", handleFirstTouch);
+      window.removeEventListener("scroll", handleFirstTouch);
+      window.removeEventListener("click", handleFirstTouch);
+    };
+
+    window.addEventListener("touchstart", handleFirstTouch, { passive: true });
+    window.addEventListener("scroll", handleFirstTouch, { passive: true });
+    window.addEventListener("click", handleFirstTouch, { passive: true });
+
+    return () => {
+      window.removeEventListener("touchstart", handleFirstTouch);
+      window.removeEventListener("scroll", handleFirstTouch);
+      window.removeEventListener("click", handleFirstTouch);
+    };
+  }, []);
+
   return (
     <section className="relative h-screen min-h-[720px] w-full overflow-hidden bg-forest">
       <video
+        ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
+        disablePictureInPicture
         poster="/images/exterior-night.jpg"
         onError={(e) => { e.currentTarget.style.display = 'none'; }}
         className="absolute inset-0 h-full w-full object-cover"

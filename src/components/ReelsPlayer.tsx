@@ -11,6 +11,7 @@ interface Comment {
 interface Reel {
   id: number;
   src: string;
+  poster: string;
   caption: string;
   likes: number;
   comments: number;
@@ -23,6 +24,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 1,
     src: "/videos/reel-1.mp4",
+    poster: "/images/explore-cypress-path.jpg",
     caption: "Walking among the giants 🌲 Cypress pathways in Musanze.",
     likes: 12430,
     comments: 5120,
@@ -36,6 +38,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 2,
     src: "/videos/reel-2.mp4",
+    poster: "/images/explore-hills.jpg",
     caption: "Morning views that feel like a dream 🌤️✨ Discovering Musanze.",
     likes: 10850,
     comments: 5430,
@@ -49,6 +52,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 3,
     src: "/videos/reel-3.mp4",
+    poster: "/images/explore-garden-lawn.jpg",
     caption: "Lush tropical walks around our beautiful compound 🌴🚶‍♂️",
     likes: 14500,
     comments: 5820,
@@ -62,6 +66,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 4,
     src: "/videos/reel-4.mp4",
+    poster: "/images/explore-resort-pool.jpg",
     caption: "A soothing afternoon by our cascading waterfall pool 💦🏊‍♀️",
     likes: 15300,
     comments: 6120,
@@ -75,6 +80,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 5,
     src: "/videos/reel-5.mp4",
+    poster: "/images/explore-caves.jpg",
     caption: "Deep inside the historic Musanze Caves ⛰️🦇 Exploration time!",
     likes: 31050,
     comments: 9840,
@@ -88,6 +94,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 6,
     src: "/videos/reel-6.mp4",
+    poster: "/images/lobby-lounge.jpg",
     caption: "Relaxing vibes in our modern lobby lounge area. Welcome home ☕🛋️",
     likes: 11812,
     comments: 5190,
@@ -101,6 +108,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 7,
     src: "/videos/reel-7.mp4",
+    poster: "/images/gourmet-rice-curry.jpg",
     caption: "Gourmet dining served fresh at Pretty Village 🍽️🔥",
     likes: 17200,
     comments: 7240,
@@ -114,6 +122,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 8,
     src: "/videos/reel-8.mp4",
+    poster: "/images/explore-garden-pathway.jpg",
     caption: "Tropical paradise path - feeling the fresh Musanze breeze 🍃🌸",
     likes: 11250,
     comments: 5300,
@@ -127,6 +136,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 9,
     src: "/videos/reel-9.mp4",
+    poster: "/images/bedroom-blue-light.jpg",
     caption: "Our luxury suite details with ambient smart LED lights 💡✨",
     likes: 28400,
     comments: 8920,
@@ -140,6 +150,7 @@ const REELS_DATA: Reel[] = [
   {
     id: 10,
     src: "/videos/reel-10.mp4",
+    poster: "/images/bar-lounge.jpg",
     caption: "Enjoying local Rwandan single-origin coffee on the terrace ☕",
     likes: 10940,
     comments: 5050,
@@ -225,26 +236,29 @@ export function ReelsPlayer() {
 
   // Sync desktop video playback when active index changes or visibility changes
   useEffect(() => {
-    if (!desktopVideoRef.current) return;
+    const video = desktopVideoRef.current;
+    if (!video) return;
+
+    video.muted = isMuted;
     
     try {
-      desktopVideoRef.current.volume = 0.2;
+      video.volume = 0.2;
     } catch {
       // ignore
     }
-    
+
     if (isPlayerVisible && isDesktop) {
-      const playPromise = desktopVideoRef.current.play();
+      const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => setIsDesktopPlaying(true))
           .catch(() => setIsDesktopPlaying(false));
       }
     } else {
-      desktopVideoRef.current.pause();
+      video.pause();
       setIsDesktopPlaying(false);
     }
-  }, [activeReelIndex, isPlayerVisible, isDesktop]);
+  }, [activeReelIndex, isPlayerVisible, isDesktop, isMuted]);
 
   const toggleDesktopPlay = () => {
     if (!desktopVideoRef.current) return;
@@ -252,8 +266,13 @@ export function ReelsPlayer() {
       desktopVideoRef.current.pause();
       setIsDesktopPlaying(false);
     } else {
-      desktopVideoRef.current.play();
-      setIsDesktopPlaying(true);
+      desktopVideoRef.current.muted = isMuted;
+      const playPromise = desktopVideoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsDesktopPlaying(true))
+          .catch(() => setIsDesktopPlaying(false));
+      }
     }
   };
 
@@ -298,6 +317,20 @@ export function ReelsPlayer() {
 
   return (
     <div ref={wrapperRef} className="mt-12 flex flex-col items-center justify-center animate-fadeIn">
+      {/* Hidden Video Preloader for smooth playback of all reels */}
+      <div className="hidden" aria-hidden="true">
+        {reels.map((reel) => (
+          <video
+            key={reel.id}
+            src={reel.src}
+            poster={reel.poster}
+            preload="auto"
+            muted
+            playsInline
+          />
+        ))}
+      </div>
+
       {/* Title / Helper info */}
       <div className="text-center mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-fern font-semibold">Musanze TV</p>
@@ -314,14 +347,17 @@ export function ReelsPlayer() {
           {/* Left column: Large high-end video player */}
           <div className="relative rounded-2xl overflow-hidden bg-black shadow-lg flex items-center justify-center h-full group border border-white/5">
             <video
+              key={currentReel.id}
               ref={desktopVideoRef}
               src={currentReel.src}
+              poster={currentReel.poster}
               loop
               playsInline
               muted={isMuted}
+              preload="auto"
+              disablePictureInPicture
               onClick={toggleDesktopPlay}
-              className="w-full h-full object-cover cursor-pointer"
-              preload="metadata"
+              className="w-full h-full object-cover cursor-pointer transition-opacity duration-300"
             />
 
             {/* Controls overlay */}
@@ -441,32 +477,22 @@ export function ReelsPlayer() {
               </form>
             </div>
 
-            {/* Bottom section: Playlists thumbnail explore cards */}
+            {/* Bottom section: Playlists thumbnail explore cards with video covers */}
             <div className="border-t border-border/40 pt-4 mt-4">
-              <h4 className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2.5">More Musanze Reels</h4>
-              <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-2">
+              <h4 className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-2.5 flex items-center justify-between">
+                <span>More Musanze Reels</span>
+                <span className="text-[10px] font-normal lowercase text-fern">Hover for preview</span>
+              </h4>
+              <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
                 {reels.map((reel, index) => {
                   const isActive = index === activeReelIndex;
                   return (
-                    <div
+                    <ReelThumbnailCard
                       key={reel.id}
+                      reel={reel}
+                      isActive={isActive}
                       onClick={() => setActiveReelIndex(index)}
-                      className={`relative w-20 h-28 rounded-xl overflow-hidden cursor-pointer flex-shrink-0 border-2 transition-all ios-springy-btn ${
-                        isActive ? "border-fern shadow-md scale-105" : "border-border/40 hover:border-fern/60"
-                      }`}
-                    >
-                      <img
-                        src="/images/exterior-night.jpg"
-                        alt={`Reel ${reel.id}`}
-                        className="w-full h-full object-cover pointer-events-none opacity-80"
-                      />
-                      <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
-                        <Play className={`w-3.5 h-3.5 text-white ${isActive ? "fill-white" : "opacity-80"}`} />
-                      </div>
-                      <span className="absolute bottom-1 left-1 right-1 text-[8px] truncate bg-black/60 text-white px-1 py-0.5 rounded text-center">
-                        Reel {reel.id}
-                      </span>
-                    </div>
+                    />
                   );
                 })}
               </div>
@@ -513,6 +539,59 @@ export function ReelsPlayer() {
   );
 }
 
+interface ReelThumbnailCardProps {
+  reel: Reel;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+function ReelThumbnailCard({ reel, isActive, onClick }: ReelThumbnailCardProps) {
+  const thumbnailVideoRef = useRef<HTMLVideoElement>(null);
+
+  const handleMouseEnter = () => {
+    if (thumbnailVideoRef.current) {
+      thumbnailVideoRef.current.currentTime = 0;
+      thumbnailVideoRef.current.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (thumbnailVideoRef.current) {
+      thumbnailVideoRef.current.pause();
+    }
+  };
+
+  return (
+    <div
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`relative w-20 h-28 rounded-xl overflow-hidden cursor-pointer flex-shrink-0 border-2 transition-all ios-springy-btn group ${
+        isActive ? "border-fern shadow-md scale-105" : "border-border/40 hover:border-fern/60 opacity-85 hover:opacity-100"
+      }`}
+    >
+      <video
+        ref={thumbnailVideoRef}
+        src={reel.src}
+        poster={reel.poster}
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className="w-full h-full object-cover pointer-events-none transition-transform duration-500 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 flex flex-col justify-between p-1.5">
+        <div className="self-end bg-black/40 backdrop-blur-xs px-1 py-0.5 rounded text-[8px] text-white flex items-center gap-0.5">
+          <Play className={`w-2.5 h-2.5 ${isActive ? "fill-fern text-fern" : "fill-white text-white"}`} />
+        </div>
+        <span className="text-[9px] font-medium text-white truncate drop-shadow">
+          Reel #{reel.id}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 interface ReelItemProps {
   reel: Reel;
   isActive: boolean;
@@ -532,16 +611,19 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
 
   // Auto-play/pause based on active state and visibility
   useEffect(() => {
-    if (!videoRef.current) return;
-    
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = isMuted;
+
     try {
-      videoRef.current.volume = 0.2;
+      video.volume = 0.2;
     } catch {
       // ignore
     }
     
     if (isActive && isPlayerVisible) {
-      const playPromise = videoRef.current.play();
+      const playPromise = video.play();
       if (playPromise !== undefined) {
         playPromise
           .then(() => setIsPlaying(true))
@@ -551,10 +633,10 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
           });
       }
     } else {
-      videoRef.current.pause();
+      video.pause();
       setIsPlaying(false);
     }
-  }, [isActive, isPlayerVisible]);
+  }, [isActive, isPlayerVisible, isMuted]);
 
   const handleVideoTap = () => {
     if (!videoRef.current) return;
@@ -563,6 +645,7 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
       videoRef.current.pause();
       setIsPlaying(false);
     } else {
+      videoRef.current.muted = isMuted;
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise
@@ -594,25 +677,19 @@ function ReelItem({ reel, isActive, isMuted, isPlayerVisible, onMuteToggle, onLi
 
   return (
     <div className="w-full h-full snap-start snap-always relative overflow-hidden flex flex-col justify-end bg-black">
-      {/* Background HTML5 Video - Only rendered when active to protect mobile GPU memory */}
-      {isActive ? (
-        <video
-          ref={videoRef}
-          src={reel.src}
-          loop
-          playsInline
-          muted={isMuted}
-          onClick={handleVideoTap}
-          className="absolute inset-0 w-full h-full object-cover cursor-pointer"
-          preload="metadata"
-        />
-      ) : (
-        <div 
-          onClick={handleVideoTap}
-          className="absolute inset-0 w-full h-full bg-cover bg-center cursor-pointer opacity-80"
-          style={{ backgroundImage: "url('/images/exterior-night.jpg')" }}
-        />
-      )}
+      {/* Background HTML5 Video - Retained with poster for smooth instantaneous transitions */}
+      <video
+        ref={videoRef}
+        src={reel.src}
+        poster={reel.poster}
+        loop
+        playsInline
+        muted={isMuted}
+        preload="auto"
+        disablePictureInPicture
+        onClick={handleVideoTap}
+        className="absolute inset-0 w-full h-full object-cover cursor-pointer transition-opacity duration-300"
+      />
 
       {/* Ambient gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/75 pointer-events-none" />
