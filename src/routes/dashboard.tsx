@@ -99,10 +99,10 @@ const QUICK_REQUESTS = [
 ];
 
 function DashboardPage() {
-  const search = Route.useSearch() as DashboardSearch;
-  const [booking, setBooking] = useState<Booking | null>(null);
-  const [isDemo, setIsDemo] = useState(false);
-  const [showSuccessAlert, setShowSuccessAlert] = useState(search.success === "true");
+  const search = (Route.useSearch() || {}) as DashboardSearch;
+  const [booking, setBooking] = useState<Booking>(DEMO_BOOKING);
+  const [isDemo, setIsDemo] = useState(true);
+  const [showSuccessAlert, setShowSuccessAlert] = useState(search?.success === "true");
 
   // Chat simulator states
   const [messages, setMessages] = useState<Message[]>([
@@ -118,23 +118,26 @@ function DashboardPage() {
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Load booking from localStorage
-    const savedActive = localStorage.getItem("pretty_village_active_booking");
-    if (savedActive) {
-      setBooking(JSON.parse(savedActive));
-      setIsDemo(false);
-    } else {
-      // Set demo booking if none is found
-      setBooking(DEMO_BOOKING);
-      setIsDemo(true);
+    try {
+      const savedActive = localStorage.getItem("pretty_village_active_booking");
+      if (savedActive) {
+        const parsed = JSON.parse(savedActive);
+        if (parsed && typeof parsed === "object" && parsed.id) {
+          setBooking(parsed);
+          setIsDemo(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load saved booking:", e);
     }
+    setBooking(DEMO_BOOKING);
+    setIsDemo(true);
   }, []);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
-
-  if (!booking) return null;
 
   const handleSendMessage = (text: string) => {
     if (!text.trim()) return;

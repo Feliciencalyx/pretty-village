@@ -33,20 +33,44 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
-  const router = useRouter();
+  console.error("Root Route Error caught:", error);
+
+  const handleResetAndClear = () => {
+    try {
+      localStorage.removeItem("pretty_village_active_booking");
+    } catch {
+      // ignore
+    }
+    window.location.href = "/";
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-2xl text-foreground">Something drifted off course</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Please try again.</p>
-        <button
-          onClick={() => { router.invalidate(); reset(); }}
-          className="mt-6 rounded-sm border border-primary px-6 py-3 text-xs uppercase tracking-widest text-primary hover:bg-primary hover:text-primary-foreground"
-        >
-          Try again
-        </button>
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
+      <div className="max-w-md text-center bg-card p-8 rounded-3xl border border-border/40 shadow-xl space-y-4 animate-fadeIn">
+        <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 mx-auto flex items-center justify-center text-xl font-bold">
+          🏡
+        </div>
+        <h1 className="text-2xl font-light text-foreground">Something drifted off course</h1>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {error?.message || "We encountered an unexpected page transition state."}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <button
+            onClick={() => {
+              reset();
+              window.location.reload();
+            }}
+            className="flex-1 rounded-2xl bg-forest text-mist py-3.5 text-xs uppercase tracking-widest font-semibold hover:bg-moss transition ios-springy-btn"
+          >
+            Try Again
+          </button>
+          <button
+            onClick={handleResetAndClear}
+            className="flex-1 rounded-2xl border border-border/60 text-foreground py-3.5 text-xs uppercase tracking-widest font-medium hover:bg-muted/40 transition ios-springy-btn"
+          >
+            Return Home
+          </button>
+        </div>
       </div>
     </div>
   );
