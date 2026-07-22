@@ -156,7 +156,11 @@ function BookingPage() {
   };
 
   const selectedRoom = ROOMS.find(r => r.id === selectedRoomId) || ROOMS[0];
-  const roomTotal = selectedRoom.price * nights;
+  const roomBaseTotal = selectedRoom.price * nights;
+  const extraGuestCount = Math.max(0, guests - 2);
+  const extraGuestRate = 15;
+  const extraGuestTotal = extraGuestCount * extraGuestRate * nights;
+  const roomTotal = roomBaseTotal + extraGuestTotal;
   const discount = nights >= 7 ? Math.round(roomTotal * 0.05) : 0;
   
   const addonsTotal = selectedAddons.reduce((sum, addonId) => {
@@ -478,7 +482,7 @@ function BookingPage() {
                       +
                     </button>
                   </div>
-                  <span className="text-xs text-muted-foreground mt-1">Adults and children (Maximum 12 guests total)</span>
+                  <span className="text-xs text-muted-foreground mt-1">Base rate covers up to 2 guests. Additional guests: +$15/night per guest (Max 12 guests).</span>
                 </div>
               </div>
             )}
@@ -839,9 +843,15 @@ function BookingPage() {
               {/* Pricing breakdown */}
               <div className="border-t border-border/40 pt-4 space-y-2 text-sm font-light">
                 <div className="flex justify-between text-muted-foreground text-xs">
-                  <span>Room Cost ({nights} nights)</span>
-                  <span className="font-mono">${roomTotal.toLocaleString()}</span>
+                  <span>Base Suite ({nights} {nights === 1 ? "night" : "nights"})</span>
+                  <span className="font-mono">${roomBaseTotal.toLocaleString()}</span>
                 </div>
+                {extraGuestCount > 0 && (
+                  <div className="flex justify-between text-fern text-xs font-medium animate-fadeIn">
+                    <span>Extra Guests ({extraGuestCount} × ${extraGuestRate}/night)</span>
+                    <span className="font-mono">+${extraGuestTotal.toLocaleString()}</span>
+                  </div>
+                )}
                 {discount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 text-xs font-medium animate-fadeIn">
                     <span>Weekly Discount (5% off)</span>
