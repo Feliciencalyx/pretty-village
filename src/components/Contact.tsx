@@ -205,23 +205,48 @@ export function Footer() {
       <div className="mx-auto flex max-w-[1400px] flex-col md:flex-row items-center justify-between gap-6 px-6 md:px-12">
         <div className="text-center md:text-left space-y-1">
           <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
-          <p className="text-xs text-muted-foreground/70 font-light">
+          <p className="text-xs text-muted-foreground/70 font-light flex items-center justify-center md:justify-start gap-1.5 mt-1">
             Mukizungu Road, Musanze · ☎️ 0792500176
           </p>
         </div>
 
-        {/* Property Links */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs uppercase tracking-widest text-muted-foreground">
-          <a href="mailto:prettyvillagee@gmail.com" className="hover:text-foreground transition">prettyvillagee@gmail.com</a>
+        {/* Property Social Links with Official Icons */}
+        <div className="flex flex-wrap items-center justify-center gap-5 text-xs font-medium text-muted-foreground">
+          <a href="mailto:prettyvillagee@gmail.com" className="hover:text-foreground transition flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5 fill-current text-moss" viewBox="0 0 24 24">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            prettyvillagee@gmail.com
+          </a>
           <span className="text-border">·</span>
-          <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Instagram</a>
+          <a 
+            href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-foreground transition flex items-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5 fill-current text-[#E4405F]" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            Instagram
+          </a>
           <span className="text-border">·</span>
-          <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">TikTok</a>
+          <a 
+            href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="hover:text-foreground transition flex items-center gap-1.5"
+          >
+            <svg className="w-3.5 h-3.5 fill-current text-foreground" viewBox="0 0 24 24">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-5.2-1.74 2.89 2.89 0 0 1 2.31-1.42V8.9a6.34 6.34 0 0 0-5.08 2.45A6.34 6.34 0 0 0 4.1 16.5a6.34 6.34 0 0 0 10.8-4.5V8.84a8.3 8.3 0 0 0 4.69 1.42V6.81a4.85 4.85 0 0 1-.59-.12z"/>
+            </svg>
+            TikTok
+          </a>
         </div>
 
-        {/* Developer Contact Section */}
+        {/* Developer Contact Section with Official Icons */}
         <div className="text-center md:text-right pt-4 md:pt-0 border-t border-border/40 md:border-t-0 w-full md:w-auto">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-1">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-1.5">
             Developed by Félicien
           </p>
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-xs">
@@ -229,25 +254,34 @@ export function Footer() {
               href="https://www.instagram.com/__felicien?igsh=dGQwdW1yNDRwaW54&utm_source=qr" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="text-moss hover:text-primary transition font-medium"
+              className="text-moss hover:text-primary transition font-medium flex items-center gap-1.5"
             >
-              📸 Instagram
+              <svg className="w-3.5 h-3.5 fill-current text-[#E4405F]" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Instagram
             </a>
             <span className="text-border">·</span>
             <a 
               href="mailto:feliciencalylx@gmail.com" 
-              className="text-moss hover:text-primary transition font-medium"
+              className="text-moss hover:text-primary transition font-medium flex items-center gap-1.5"
             >
-              ✉️ Email
+              <svg className="w-3.5 h-3.5 fill-current text-moss" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+              </svg>
+              Email
             </a>
             <span className="text-border">·</span>
             <a 
               href="https://wa.me/250790156224?text=Hello%20Felicien!" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="text-[#25D366] hover:underline transition font-semibold"
+              className="text-[#25D366] hover:underline transition font-semibold flex items-center gap-1.5"
             >
-              💬 WhatsApp (0790156224)
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.144 4.18 4.246-1.113z" />
+              </svg>
+              WhatsApp (0790156224)
             </a>
           </div>
         </div>
