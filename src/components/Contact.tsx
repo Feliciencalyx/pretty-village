@@ -205,11 +205,11 @@ export function Contact() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background py-12">
-      <div className="mx-auto flex max-w-[1400px] flex-col md:flex-row items-center justify-between gap-6 px-6 md:px-12">
-        <div className="text-center md:text-left space-y-1">
+    <footer className="border-t border-border bg-background pt-12 pb-28 md:pb-24">
+      <div className="mx-auto flex max-w-[1400px] flex-col lg:flex-row items-center justify-between gap-8 px-6 md:px-12">
+        <div className="text-center lg:text-left space-y-1">
           <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
-          <p className="text-xs text-muted-foreground/70 font-light flex items-center justify-center md:justify-start gap-1.5 mt-1">
+          <p className="text-xs text-muted-foreground/70 font-light flex items-center justify-center lg:justify-start gap-1.5 mt-1">
             Mukizungu Road, Musanze · ☎️ 0792500176
           </p>
         </div>
@@ -249,11 +249,11 @@ export function Footer() {
         </div>
 
         {/* Developer Contact Section with Official Icons */}
-        <div className="text-center md:text-right pt-4 md:pt-0 border-t border-border/40 md:border-t-0 w-full md:w-auto">
+        <div className="text-center lg:text-right pt-4 lg:pt-0 border-t border-border/40 lg:border-t-0 w-full lg:w-auto">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-1.5">
             Developed by Félicien
           </p>
-          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-xs">
+          <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3 text-xs">
             <a 
               href="https://www.instagram.com/__felicien?igsh=dGQwdW1yNDRwaW54&utm_source=qr" 
               target="_blank" 
