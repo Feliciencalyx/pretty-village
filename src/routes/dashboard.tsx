@@ -306,23 +306,15 @@ ${booking.guest.name}`
                   href={getWhatsAppLink("250792500176")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
                 >
-                  <MessageSquare className="w-4 h-4 fill-current" /> WhatsApp Host 1 (0792500176)
-                </a>
-                <a
-                  href={getWhatsAppLink("250790156224")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
-                >
-                  <MessageSquare className="w-4 h-4 fill-current" /> WhatsApp Host 2 (0790156224)
+                  <MessageSquare className="w-4 h-4 fill-current" /> Send via WhatsApp
                 </a>
                 <a
                   href={getEmailLink()}
-                  className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                  className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
                 >
-                  <Send className="w-4 h-4" /> Email Hosts
+                  <Send className="w-4 h-4" /> Send via Email
                 </a>
               </div>
 
@@ -426,21 +418,13 @@ ${booking.guest.name}`
                         href={getWhatsAppLink("250792500176")}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
                       >
-                        <MessageSquare className="w-4 h-4 fill-current" /> Host 1 (0792500176)
-                      </a>
-                      <a
-                        href={getWhatsAppLink("250790156224")}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
-                      >
-                        <MessageSquare className="w-4 h-4 fill-current" /> Host 2 (0790156224)
+                        <MessageSquare className="w-4 h-4 fill-current" /> Send via WhatsApp
                       </a>
                       <a
                         href={getEmailLink()}
-                        className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                        className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
                       >
                         <Send className="w-4 h-4" /> Send via Email
                       </a>

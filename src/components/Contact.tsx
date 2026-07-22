@@ -111,18 +111,7 @@ export function Contact() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[11px] bg-[#25D366]/10 text-[#25D366] px-2.5 py-1 rounded-full font-semibold border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition"
                   >
-                    💬 WhatsApp Host 1
-                  </a>
-                </div>
-                <div className="flex items-center gap-3">
-                  <a href="tel:0790156224" className="hover:underline text-moss hover:text-primary font-medium transition">☎️ 0790156224</a>
-                  <a 
-                    href={getWhatsAppEnquiryUrl("250790156224")}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[11px] bg-[#25D366]/10 text-[#25D366] px-2.5 py-1 rounded-full font-semibold border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition"
-                  >
-                    💬 WhatsApp Host 2
+                    💬 WhatsApp Us
                   </a>
                 </div>
               </div>
@@ -217,7 +206,7 @@ export function Footer() {
         <div className="text-center md:text-left">
           <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
           <p className="text-xs text-muted-foreground/70 mt-1 font-light">
-            Mukizungu Road, Musanze · ☎️ 0792500176 / 0790156224
+            Mukizungu Road, Musanze · ☎️ 0792500176
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-6 eyebrow text-muted-foreground">

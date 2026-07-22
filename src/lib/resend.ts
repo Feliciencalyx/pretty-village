@@ -9,7 +9,6 @@ export const RECIPIENT_EMAILS = [
 ];
 
 export const PRIMARY_PHONE_1 = "0792500176";
-export const PRIMARY_PHONE_2 = "0790156224";
 
 export interface InquiryPayload {
   name: string;
@@ -234,8 +233,7 @@ Target Inboxes: prettyvillagee@gmail.com & feliciencalylx@gmail.com
         <p style="margin: 6px 0; font-size: 18px; color: #1e3a29; font-weight: bold;">Total Amount: $${booking.financials.total}</p>
 
         <div style="margin-top: 20px; padding: 12px; background-color: #f7fafc; border-radius: 6px; font-size: 13px;">
-          <strong>WhatsApp Quick Contact:</strong><br/>
-          Host 1: <a href="https://wa.me/250792500176">0792500176</a> | Host 2: <a href="https://wa.me/250790156224">0790156224</a>
+          <strong>WhatsApp Quick Contact:</strong> <a href="https://wa.me/250792500176">0792500176</a>
         </div>
       </div>
 
