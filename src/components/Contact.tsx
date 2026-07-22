@@ -202,18 +202,54 @@ export function Contact() {
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background py-12">
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
-        <div className="text-center md:text-left">
+      <div className="mx-auto flex max-w-[1400px] flex-col md:flex-row items-center justify-between gap-6 px-6 md:px-12">
+        <div className="text-center md:text-left space-y-1">
           <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
-          <p className="text-xs text-muted-foreground/70 mt-1 font-light">
+          <p className="text-xs text-muted-foreground/70 font-light">
             Mukizungu Road, Musanze · ☎️ 0792500176
           </p>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-6 eyebrow text-muted-foreground">
-          <a href="mailto:prettyvillagee@gmail.com" className="hover:text-foreground">prettyvillagee@gmail.com</a>
-          <a href="mailto:feliciencalylx@gmail.com" className="hover:text-foreground">feliciencalylx@gmail.com</a>
-          <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Instagram</a>
-          <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">TikTok</a>
+
+        {/* Property Links */}
+        <div className="flex flex-wrap items-center justify-center gap-4 text-xs uppercase tracking-widest text-muted-foreground">
+          <a href="mailto:prettyvillagee@gmail.com" className="hover:text-foreground transition">prettyvillagee@gmail.com</a>
+          <span className="text-border">·</span>
+          <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">Instagram</a>
+          <span className="text-border">·</span>
+          <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition">TikTok</a>
+        </div>
+
+        {/* Developer Contact Section */}
+        <div className="text-center md:text-right pt-4 md:pt-0 border-t border-border/40 md:border-t-0 w-full md:w-auto">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold mb-1">
+            Developed by Félicien
+          </p>
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 text-xs">
+            <a 
+              href="https://www.instagram.com/__felicien?igsh=dGQwdW1yNDRwaW54&utm_source=qr" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-moss hover:text-primary transition font-medium"
+            >
+              📸 Instagram
+            </a>
+            <span className="text-border">·</span>
+            <a 
+              href="mailto:feliciencalylx@gmail.com" 
+              className="text-moss hover:text-primary transition font-medium"
+            >
+              ✉️ Email
+            </a>
+            <span className="text-border">·</span>
+            <a 
+              href="https://wa.me/250790156224?text=Hello%20Felicien!" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-[#25D366] hover:underline transition font-semibold"
+            >
+              💬 WhatsApp (0790156224)
+            </a>
+          </div>
         </div>
       </div>
     </footer>
