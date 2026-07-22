@@ -15,6 +15,7 @@ export function Contact() {
   const [message, setMessage] = useState("");
 
   const sanitizeInput = (str: string) => {
+    if (typeof str !== "string") return "";
     return str.replace(/<[^>]*>/g, "").trim();
   };
 
