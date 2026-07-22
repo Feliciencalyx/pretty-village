@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Contact";
 import { saveBookingToFirebase } from "@/lib/firebase";
+import { sendBookingResendEmail } from "@/lib/resend";
 
 interface BookSearch {
   room?: string;
@@ -288,7 +289,12 @@ function BookingPage() {
           createdAt: new Date().toISOString(),
         };
 
-        // Persist to Firebase Firestore database
+        // 1. Dispatch Resend Email notification to prettyvillagee@gmail.com and feliciencalylx@gmail.com
+        sendBookingResendEmail(newBooking).catch((err) => {
+          console.warn("Resend booking email error:", err);
+        });
+
+        // 2. Persist to Firebase Firestore database
         await saveBookingToFirebase(newBooking);
 
         try {

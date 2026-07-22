@@ -115,6 +115,44 @@ export function Nav() {
           </nav>
         </div>
       )}
+
+      {/* Floating WhatsApp Quick Action Button */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+        <div className="group relative">
+          <button
+            className="flex items-center gap-2.5 bg-[#25D366] text-white px-4 py-3 rounded-full shadow-xl hover:bg-[#20ba59] transition-all duration-300 ios-springy-btn active:scale-95"
+            aria-label="WhatsApp Us"
+          >
+            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.144 4.18 4.246-1.113z" />
+            </svg>
+            <span className="text-xs font-bold uppercase tracking-wider hidden sm:inline">WhatsApp</span>
+          </button>
+
+          {/* Quick Menu Popover on Hover/Click */}
+          <div className="absolute bottom-full right-0 mb-3 hidden group-hover:flex flex-col bg-background/95 backdrop-blur-md border border-border/40 p-3 rounded-2xl shadow-2xl min-w-[220px] gap-2 animate-slideUp">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-semibold px-2">Chat with hosts</p>
+            <a
+              href="https://wa.me/250792500176?text=Hello%20Pretty%20Village%20Musanze!%20I%20have%20an%20enquiry."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#25D366]/10 hover:text-[#25D366] text-xs transition"
+            >
+              <span>Host 1</span>
+              <span className="font-mono font-semibold text-[11px]">0792500176</span>
+            </a>
+            <a
+              href="https://wa.me/250790156224?text=Hello%20Pretty%20Village%20Musanze!%20I%20have%20an%20enquiry."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-2.5 rounded-xl hover:bg-[#25D366]/10 hover:text-[#25D366] text-xs transition border-t border-border/20 pt-2"
+            >
+              <span>Host 2</span>
+              <span className="font-mono font-semibold text-[11px]">0790156224</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

@@ -193,7 +193,7 @@ function DashboardPage() {
     }
   };
 
-  const getWhatsAppLink = () => {
+  const getWhatsAppLink = (phone: string = "250792500176") => {
     if (!booking) return "#";
     const addonsText = booking.addons.length > 0 
       ? booking.addons.map(a => `- ${a.name}`).join("\n")
@@ -220,7 +220,7 @@ ${addonsText}
 -----------------------------------------
 Thank you! Please confirm my stay.`
     );
-    return `https://wa.me/250792500176?text=${text}`;
+    return `https://wa.me/${phone}?text=${text}`;
   };
 
   const getEmailLink = () => {
@@ -256,7 +256,7 @@ Please review and confirm my stay.
 Best regards,
 ${booking.guest.name}`
     );
-    return `mailto:prettyvillagee@gmail.com?subject=${subject}&body=${body}`;
+    return `mailto:prettyvillagee@gmail.com,feliciencalylx@gmail.com?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -301,20 +301,28 @@ ${booking.guest.name}`
                 <strong className="block mt-2 text-foreground font-semibold">Action Required:</strong> To finalize check-in protocols and coordinate your key handoff, click below to submit your details directly to our hosts on WhatsApp and Email:
               </p>
               
-              <div className="flex gap-4 flex-wrap mt-4">
+              <div className="flex gap-3 flex-wrap mt-4">
                 <a
-                  href={getWhatsAppLink()}
+                  href={getWhatsAppLink("250792500176")}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
                 >
-                  <MessageSquare className="w-4 h-4 fill-current" /> Send to WhatsApp
+                  <MessageSquare className="w-4 h-4 fill-current" /> WhatsApp Host 1 (0792500176)
+                </a>
+                <a
+                  href={getWhatsAppLink("250790156224")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                >
+                  <MessageSquare className="w-4 h-4 fill-current" /> WhatsApp Host 2 (0790156224)
                 </a>
                 <a
                   href={getEmailLink()}
-                  className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                  className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
                 >
-                  <Send className="w-4 h-4" /> Send to Email
+                  <Send className="w-4 h-4" /> Email Hosts
                 </a>
               </div>
 
@@ -413,18 +421,26 @@ ${booking.guest.name}`
                         Please send your reservation details to our management team on WhatsApp and Email to secure direct arrival support.
                       </p>
                     </div>
-                    <div className="flex gap-4 flex-wrap">
+                    <div className="flex gap-3 flex-wrap">
                       <a
-                        href={getWhatsAppLink()}
+                        href={getWhatsAppLink("250792500176")}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
                       >
-                        <MessageSquare className="w-4 h-4 fill-current" /> Send via WhatsApp
+                        <MessageSquare className="w-4 h-4 fill-current" /> Host 1 (0792500176)
+                      </a>
+                      <a
+                        href={getWhatsAppLink("250790156224")}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#25D366] text-white text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-[#20ba59] transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                      >
+                        <MessageSquare className="w-4 h-4 fill-current" /> Host 2 (0790156224)
                       </a>
                       <a
                         href={getEmailLink()}
-                        className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-5 py-3.5 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
+                        className="bg-forest text-mist text-xs font-semibold uppercase tracking-widest px-4 py-3 rounded-xl hover:bg-moss hover:text-mist transition flex items-center gap-2 ios-springy-btn shadow-sm"
                       >
                         <Send className="w-4 h-4" /> Send via Email
                       </a>

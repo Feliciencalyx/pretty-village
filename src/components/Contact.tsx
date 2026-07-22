@@ -1,6 +1,7 @@
 import { useReveal } from "@/hooks/use-reveal";
 import { useState } from "react";
 import { saveInquiryToFirebase } from "@/lib/firebase";
+import { sendInquiryResendEmail } from "@/lib/resend";
 
 export function Contact() {
   const { ref, visible } = useReveal<HTMLDivElement>();
@@ -40,16 +41,30 @@ export function Contact() {
     // Instant UI success state
     setSent(true);
 
-    // Persist asynchronously in the background without blocking the browser main thread
-    saveInquiryToFirebase({
+    const inquiryPayload = {
       name: cleanName,
       email: cleanEmail,
       arrival: sanitizeInput(arrival),
       guests: sanitizeInput(guests),
       message: sanitizeInput(message),
-    }).catch((err) => {
+    };
+
+    // 1. Dispatch Resend Email to prettyvillagee@gmail.com and feliciencalylx@gmail.com
+    sendInquiryResendEmail(inquiryPayload).catch((err) => {
+      console.warn("Resend email dispatch complete:", err);
+    });
+
+    // 2. Persist asynchronously to Firebase / local cache
+    saveInquiryToFirebase(inquiryPayload).catch((err) => {
       console.warn("Background inquiry save complete:", err);
     });
+  };
+
+  const getWhatsAppEnquiryUrl = (phone: string) => {
+    const text = encodeURIComponent(
+      `Hello Pretty Village Musanze! 🏡\nMy name is ${name || "a guest"}.\nEmail: ${email || "N/A"}\nI would like to enquire about availability and rates for ${arrival || "upcoming dates"}${guests ? ` for ${guests} guests` : ""}.\n${message ? `Note: ${message}` : ""}`
+    );
+    return `https://wa.me/${phone}?text=${text}`;
   };
 
   return (
@@ -65,6 +80,7 @@ export function Contact() {
             Tell us a little about your visit and we'll send a personal note back with
             availability, rates and suggestions for your days here.
           </p>
+
           <div className="mt-12 space-y-6 border-t border-border pt-8">
             <div>
               <p className="eyebrow text-muted-foreground">Find us</p>
@@ -75,13 +91,41 @@ export function Contact() {
                 <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="text-moss hover:text-primary transition">TikTok</a>
               </div>
             </div>
+
             <div>
-              <p className="eyebrow text-muted-foreground">Contacts</p>
-              <p className="mt-2 text-foreground/80 font-light">
-                Email: <a href="mailto:prettyvillagee@gmail.com" className="hover:underline text-moss hover:text-primary transition">prettyvillagee@gmail.com</a>
-                <br />
-                Phone: <a href="tel:0792500176" className="hover:underline text-moss hover:text-primary transition">0792500176</a>
+              <p className="eyebrow text-muted-foreground">Emails</p>
+              <p className="mt-2 text-foreground/80 font-light space-y-1">
+                <a href="mailto:prettyvillagee@gmail.com" className="block hover:underline text-moss hover:text-primary transition">📧 prettyvillagee@gmail.com</a>
+                <a href="mailto:feliciencalylx@gmail.com" className="block hover:underline text-moss hover:text-primary transition">📧 feliciencalylx@gmail.com</a>
               </p>
+            </div>
+
+            <div>
+              <p className="eyebrow text-muted-foreground">Telephone & WhatsApp</p>
+              <div className="mt-2 space-y-2 text-foreground/80 font-light">
+                <div className="flex items-center gap-3">
+                  <a href="tel:0792500176" className="hover:underline text-moss hover:text-primary font-medium transition">☎️ 0792500176</a>
+                  <a 
+                    href={getWhatsAppEnquiryUrl("250792500176")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] bg-[#25D366]/10 text-[#25D366] px-2.5 py-1 rounded-full font-semibold border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition"
+                  >
+                    💬 WhatsApp Host 1
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <a href="tel:0790156224" className="hover:underline text-moss hover:text-primary font-medium transition">☎️ 0790156224</a>
+                  <a 
+                    href={getWhatsAppEnquiryUrl("250790156224")}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] bg-[#25D366]/10 text-[#25D366] px-2.5 py-1 rounded-full font-semibold border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition"
+                  >
+                    💬 WhatsApp Host 2
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -149,14 +193,17 @@ export function Contact() {
               className="mt-2 w-full border-0 border-b border-border bg-transparent py-3 text-lg font-light text-foreground outline-none transition-colors focus:border-moss resize-none"
             />
           </div>
-          <button
-            type="submit"
-            disabled={sent || isSubmitting}
-            className="mt-6 inline-flex items-center gap-4 rounded-sm border border-primary bg-primary px-8 py-4 text-xs uppercase tracking-[0.3em] text-primary-foreground transition hover:bg-transparent hover:text-primary disabled:opacity-70"
-          >
-            {isSubmitting ? "Saving to Firebase..." : sent ? "Message sent" : "Send enquiry"}
-            <span className="inline-block h-px w-6 bg-current" />
-          </button>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-6">
+            <button
+              type="submit"
+              disabled={sent || isSubmitting}
+              className="inline-flex items-center justify-center gap-4 rounded-sm border border-primary bg-primary px-8 py-4 text-xs uppercase tracking-[0.3em] text-primary-foreground transition hover:bg-transparent hover:text-primary disabled:opacity-70"
+            >
+              {isSubmitting ? "Sending..." : sent ? "Enquiry Sent" : "Send Enquiry"}
+              <span className="inline-block h-px w-6 bg-current" />
+            </button>
+          </div>
         </form>
       </div>
     </section>
@@ -167,8 +214,15 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background py-12">
       <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-12">
-        <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
-        <div className="flex gap-8 eyebrow text-muted-foreground">
+        <div className="text-center md:text-left">
+          <p className="eyebrow text-muted-foreground">© {new Date().getFullYear()} Pretty Village Musanze</p>
+          <p className="text-xs text-muted-foreground/70 mt-1 font-light">
+            Mukizungu Road, Musanze · ☎️ 0792500176 / 0790156224
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-center gap-6 eyebrow text-muted-foreground">
+          <a href="mailto:prettyvillagee@gmail.com" className="hover:text-foreground">prettyvillagee@gmail.com</a>
+          <a href="mailto:feliciencalylx@gmail.com" className="hover:text-foreground">feliciencalylx@gmail.com</a>
           <a href="https://www.instagram.com/prettyvillagee_musanze?igsh=NDJlaGpvanFjY2s=" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">Instagram</a>
           <a href="https://www.tiktok.com/@prettyvillage_musanze?_r=1&_t=ZS-989s0Wrj2Cu" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">TikTok</a>
         </div>
@@ -176,3 +230,4 @@ export function Footer() {
     </footer>
   );
 }
+
