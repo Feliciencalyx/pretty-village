@@ -43,16 +43,13 @@ export interface BookingPayload {
   };
 }
 
-const DEFAULT_RESEND_KEY = "re_aApSAYyE_9TBomDrj24ty45Mju7x3aKKj";
-
 /**
  * Sends email via Resend API to management recipients.
  */
 async function sendEmailRequest(subject: string, htmlContent: string, textContent: string, replyTo?: string) {
   const resendApiKey = 
     (import.meta as any).env?.VITE_RESEND_API_KEY || 
-    (typeof process !== "undefined" ? process.env?.RESEND_API_KEY : "") ||
-    DEFAULT_RESEND_KEY;
+    (typeof process !== "undefined" ? process.env?.RESEND_API_KEY : "");
 
   if (!resendApiKey) {
     console.warn("No Resend API Key configured.");
